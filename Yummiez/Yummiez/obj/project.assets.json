@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/emanuelespitia/Library/CloudStorage/OneDrive-JacksonvilleUniversity/Senior/Spring/CS392/Yummiez/Yummiez.csproj",
+      "projectUniqueName": "/Users/emanuelespitia/Library/CloudStorage/OneDrive-JacksonvilleUniversity/Senior/Spring/CS392/Yummiez/Yummiez/Yummiez.csproj",
       "projectName": "Yummiez",
-      "projectPath": "/Users/emanuelespitia/Library/CloudStorage/OneDrive-JacksonvilleUniversity/Senior/Spring/CS392/Yummiez/Yummiez.csproj",
+      "projectPath": "/Users/emanuelespitia/Library/CloudStorage/OneDrive-JacksonvilleUniversity/Senior/Spring/CS392/Yummiez/Yummiez/Yummiez.csproj",
       "packagesPath": "/Users/emanuelespitia/.nuget/packages/",
-      "outputPath": "/Users/emanuelespitia/Library/CloudStorage/OneDrive-JacksonvilleUniversity/Senior/Spring/CS392/Yummiez/obj/",
+      "outputPath": "/Users/emanuelespitia/Library/CloudStorage/OneDrive-JacksonvilleUniversity/Senior/Spring/CS392/Yummiez/Yummiez/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/emanuelespitia/.nuget/NuGet/NuGet.Config"

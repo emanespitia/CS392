@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Yummiez")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3e732960f4167e0399f4fab1ec653a16b84cf867")]
 [assembly: System.Reflection.AssemblyProductAttribute("Yummiez")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Yummiez")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
