@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Yummiez")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2f6a9dc4d5fd16e79b15e19f7117b572050d00f7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2df25060cad0a3112f0f1fc01d1e5d551ccf05f2")]
 [assembly: System.Reflection.AssemblyProductAttribute("Yummiez")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Yummiez")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
