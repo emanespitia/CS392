@@ -1,26 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "/Users/emanuelespitia/Library/CloudStorage/OneDrive-JacksonvilleUniversity/Senior/Spring/CS392/Yummiez/Yummiez/Yummiez.csproj": {}
+    "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Yummiez.csproj": {}
   },
   "projects": {
-    "/Users/emanuelespitia/Library/CloudStorage/OneDrive-JacksonvilleUniversity/Senior/Spring/CS392/Yummiez/Yummiez/Yummiez.csproj": {
+    "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Yummiez.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/emanuelespitia/Library/CloudStorage/OneDrive-JacksonvilleUniversity/Senior/Spring/CS392/Yummiez/Yummiez/Yummiez.csproj",
+        "projectUniqueName": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Yummiez.csproj",
         "projectName": "Yummiez",
-        "projectPath": "/Users/emanuelespitia/Library/CloudStorage/OneDrive-JacksonvilleUniversity/Senior/Spring/CS392/Yummiez/Yummiez/Yummiez.csproj",
-        "packagesPath": "/Users/emanuelespitia/.nuget/packages/",
-        "outputPath": "/Users/emanuelespitia/Library/CloudStorage/OneDrive-JacksonvilleUniversity/Senior/Spring/CS392/Yummiez/Yummiez/obj/",
+        "projectPath": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Yummiez.csproj",
+        "packagesPath": "C:\\Users\\emane\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/emanuelespitia/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\emane\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/usr/local/share/dotnet/library-packs": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,11 +45,19 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.12, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -63,7 +77,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
