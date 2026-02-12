@@ -1,0 +1,73 @@
+﻿@page
+@model Yummiez.Pages.Restaurants.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Restaurant</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Restaurant.RestaurantId" />
+            <div class="form-group">
+<span class="text-danger">*</span>
+                <label asp-for="Restaurant.Name" class="control-label"></label>
+                <input asp-for="Restaurant.Name" class="form-control" aria-required="true"/>
+                <span asp-validation-for="Restaurant.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+<span class="text-danger">*</span>
+                <label asp-for="Restaurant.OwnerName" class="control-label"></label>
+                <input asp-for="Restaurant.OwnerName" class="form-control" aria-required="true"/>
+                <span asp-validation-for="Restaurant.OwnerName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+<span class="text-danger">*</span>
+                <label asp-for="Restaurant.Address" class="control-label"></label>
+                <input asp-for="Restaurant.Address" class="form-control" aria-required="true"/>
+                <span asp-validation-for="Restaurant.Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Restaurant.Phone" class="control-label"></label>
+                <input asp-for="Restaurant.Phone" class="form-control" />
+                <span asp-validation-for="Restaurant.Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Restaurant.IsOpen" class="control-label"></label>
+                <input asp-for="Restaurant.IsOpen" class="form-control" />
+                <span asp-validation-for="Restaurant.IsOpen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Restaurant.AdminId" class="control-label"></label>
+                <input asp-for="Restaurant.AdminId" class="form-control" />
+                <span asp-validation-for="Restaurant.AdminId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Restaurant.CreatedAt" class="control-label"></label>
+                <input asp-for="Restaurant.CreatedAt" class="form-control" />
+                <span asp-validation-for="Restaurant.CreatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Restaurant.UpdatedAt" class="control-label"></label>
+                <input asp-for="Restaurant.UpdatedAt" class="form-control" />
+                <span asp-validation-for="Restaurant.UpdatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
