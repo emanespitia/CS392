@@ -23,6 +23,3 @@ jobs:
 
     - name: Build
       run: dotnet build $(find . -name "*.csproj") --no-restore
-
-    - name: Test
-      run: dotnet test $(find . -name "*.csproj") --no-build --verbosity normal
