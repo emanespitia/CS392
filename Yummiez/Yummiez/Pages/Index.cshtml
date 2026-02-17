@@ -4,7 +4,153 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="hero-title">Delicious food, delivered fast.</h1>
+        <p class="hero-subtitle">Order from your favorite local restaurants.</p>
+        
+        <div class="search-bar-container mt-4">
+            <form class="d-flex">
+                <input class="form-control search-input" type="search" placeholder="Enter delivery address" aria-label="Search">
+                <button class="btn btn-primary search-btn" type="submit">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Categories (Mock) -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-center flex-wrap gap-2">
+        <a href="#" class="btn btn-light rounded-pill px-3 border shadow-sm">
+            🍔 Burgers
+        </a>
+        <a href="#" class="btn btn-light rounded-pill px-3 border shadow-sm">
+            🍕 Pizza
+        </a>
+        <a href="#" class="btn btn-light rounded-pill px-3 border shadow-sm">
+            🍣 Sushi
+        </a>
+        <a href="#" class="btn btn-light rounded-pill px-3 border shadow-sm">
+            🥗 Healthy
+        </a>
+        <a href="#" class="btn btn-light rounded-pill px-3 border shadow-sm">
+            🍩 Desserts
+        </a>
+         <a href="#" class="btn btn-light rounded-pill px-3 border shadow-sm">
+            ☕ Coffee
+        </a>
+    </div>
+</div>
+
+<!-- Featured Restaurants Section -->
+<div class="container mb-5">
+    <h2 class="section-title">Featured Restaurants</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        
+        <!-- Mock Restaurant 1 -->
+        <div class="col">
+            <div class="card restaurant-card h-100">
+                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" class="card-img-top" alt="Burger King">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="restaurant-name">Burger Joint</h5>
+                        <span class="rating-badge">4.8 <i class="fas fa-star text-warning"></i></span>
+                    </div>
+                    <p class="restaurant-meta">Burgers • American • $$</p>
+                    <div class="mt-2 text-muted small">
+                        <i class="fas fa-clock me-1"></i> 20-30 min • FREE Delivery
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mock Restaurant 2 -->
+        <div class="col">
+            <div class="card restaurant-card h-100">
+                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" class="card-img-top" alt="Pizza">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="restaurant-name">Mama's Pizza</h5>
+                        <span class="rating-badge">4.5 <i class="fas fa-star text-warning"></i></span>
+                    </div>
+                    <p class="restaurant-meta">Pizza • Italian • $</p>
+                    <div class="mt-2 text-muted small">
+                         <i class="fas fa-clock me-1"></i> 30-45 min • $1.99 Delivery
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mock Restaurant 3 -->
+        <div class="col">
+            <div class="card restaurant-card h-100">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" class="card-img-top" alt="Salad">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="restaurant-name">Green Bowl</h5>
+                        <span class="rating-badge">4.9 <i class="fas fa-star text-warning"></i></span>
+                    </div>
+                    <p class="restaurant-meta">Healthy • Salads • $$$</p>
+                     <div class="mt-2 text-muted small">
+                         <i class="fas fa-clock me-1"></i> 15-25 min • FREE Delivery
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <!-- Mock Restaurant 4 -->
+        <div class="col">
+            <div class="card restaurant-card h-100">
+                <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" class="card-img-top" alt="Sushi">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="restaurant-name">Sakura Sushi</h5>
+                        <span class="rating-badge">4.7 <i class="fas fa-star text-warning"></i></span>
+                    </div>
+                    <p class="restaurant-meta">Sushi • Japanese • $$$</p>
+                     <div class="mt-2 text-muted small">
+                         <i class="fas fa-clock me-1"></i> 40-55 min • $3.99 Delivery
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+         <!-- Mock Restaurant 5 -->
+         <div class="col">
+            <div class="card restaurant-card h-100">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" class="card-img-top" alt="Pizza">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="restaurant-name">Taco Fiesta</h5>
+                        <span class="rating-badge">4.3 <i class="fas fa-star text-warning"></i></span>
+                    </div>
+                    <p class="restaurant-meta">Mexican • Tacos • $</p>
+                    <div class="mt-2 text-muted small">
+                         <i class="fas fa-clock me-1"></i> 25-35 min • $0.99 Delivery
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          <!-- Mock Restaurant 6 -->
+         <div class="col">
+            <div class="card restaurant-card h-100">
+                <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3" class="card-img-top" alt="Pizza">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="restaurant-name">Sweet Tooth</h5>
+                        <span class="rating-badge">4.9 <i class="fas fa-star text-warning"></i></span>
+                    </div>
+                    <p class="restaurant-meta">Desserts • Bakery • $$</p>
+                    <div class="mt-2 text-muted small">
+                         <i class="fas fa-clock me-1"></i> 10-20 min • FREE Delivery
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>

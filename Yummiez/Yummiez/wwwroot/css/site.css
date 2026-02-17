@@ -1,31 +1,210 @@
+/* Global Styles */
+:root {
+    --primary-green: #008037;
+    --light-green: #e8f5e9;
+    --dark-green: #004d20;
+    --text-dark: #191919;
+    --text-muted: #767676;
+    --bg-light: #f7f7f7;
+    --white: #ffffff;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+    --radius-md: 12px;
+    --radius-pill: 50px;
+}
+
 html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
+  font-size: 16px;
   position: relative;
   min-height: 100%;
 }
 
 body {
   margin-bottom: 60px;
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: var(--text-dark);
+  background-color: var(--white);
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+a {
+    color: var(--primary-green);
+    text-decoration: none;
+    transition: color 0.2s;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+a:hover {
+    color: var(--dark-green);
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--white);
+    box-shadow: var(--shadow-sm);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 800;
+    color: var(--primary-green) !important;
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+.nav-link {
+    font-weight: 600;
+    color: var(--text-dark) !important;
+}
+
+.nav-link:hover {
+    color: var(--primary-green) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+    color: var(--white);
+    font-weight: 700;
+    border-radius: var(--radius-pill);
+    padding: 0.6rem 1.5rem;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    color: var(--primary-green);
+    border-color: var(--primary-green);
+    border-radius: var(--radius-pill);
+    font-weight: 700;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--light-green);
+    color: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+/* Hero Section */
+.hero-section {
+    background-color: var(--light-green); /* Fallback */
+    /* You can add a background image here if desired */
+    padding: 4rem 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.hero-title {
+    font-weight: 800;
+    color: var(--dark-green);
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.search-bar-container {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.search-input {
+    border-radius: var(--radius-pill);
+    padding: 1rem 1.5rem;
+    border: 2px solid transparent;
+    box-shadow: var(--shadow-md);
+    font-size: 1.1rem;
+    transition: all 0.2s;
+}
+
+.search-input:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 4px rgba(0, 128, 55, 0.1);
+    outline: none;
+}
+
+.search-btn {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    bottom: 5px;
+    border-radius: var(--radius-pill);
+    padding: 0 1.5rem;
+}
+
+/* Featured Section */
+.section-title {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--text-dark);
+}
+
+.restaurant-card {
+    border: none;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow-sm);
+    height: 100%;
+    cursor: pointer;
+}
+
+.restaurant-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.card-img-top {
+    height: 180px;
+    object-fit: cover;
+    background-color: #eee;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.restaurant-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-dark);
+}
+
+.restaurant-meta {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rating-badge {
+    background-color: #f7f7f7;
+    padding: 2px 6px;
+    border-radius: 50%; /* Circle? Or rounded rect */
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-dark);
+}
+
+/* Footer */
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+  background-color: #f7f7f7;
 }
