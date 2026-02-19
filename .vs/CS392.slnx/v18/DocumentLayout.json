@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\",
+  "WorkspaceRootPath": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Yummiez\\Yummiez\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
@@ -24,11 +24,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\appsettings.json",
               "RelativeDocumentMoniker": "Yummiez\\Yummiez\\appsettings.json",
-              "ToolTip": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\appsettings.json",
+              "ToolTip": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\appsettings.json",
               "RelativeToolTip": "Yummiez\\Yummiez\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-02-05T20:33:53.798Z",
               "EditorCaption": ""

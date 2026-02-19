@@ -1,17 +1,29 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\",
+  "WorkspaceRootPath": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|c:\\users\\emane\\source\\repos\\emanespitia\\cs392\\yummiez\\yummiez\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|c:\\users\\amath\\source\\repos\\emanespitia\\cs392\\yummiez\\yummiez\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|solutionrelative:yummiez\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|c:\\users\\amath\\source\\repos\\emanespitia\\cs392\\yummiez\\yummiez\\scaffoldingreadme.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|solutionrelative:yummiez\\scaffoldingreadme.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|c:\\users\\amath\\source\\repos\\emanespitia\\cs392\\yummiez\\yummiez\\data\\migrations\\applicationdb\\20260212212824_initialidentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|solutionrelative:yummiez\\data\\migrations\\applicationdb\\20260212212824_initialidentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|c:\\users\\amath\\source\\repos\\emanespitia\\cs392\\yummiez\\yummiez\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|solutionrelative:yummiez\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|c:\\users\\emane\\source\\repos\\emanespitia\\cs392\\yummiez\\yummiez\\data\\applicationdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|c:\\users\\amath\\source\\repos\\emanespitia\\cs392\\yummiez\\yummiez\\data\\applicationdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|solutionrelative:yummiez\\data\\applicationdbcontextfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|c:\\users\\emane\\source\\repos\\emanespitia\\cs392\\yummiez\\yummiez\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|c:\\users\\amath\\source\\repos\\emanespitia\\cs392\\yummiez\\yummiez\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FF2F2AD7-0EAF-4071-89E9-BEABDFEC10BB}|Yummiez\\Yummiez.csproj|solutionrelative:yummiez\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -22,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 293,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,42 +42,78 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ApplicationDbContextFactory.cs",
-              "DocumentMoniker": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Data\\ApplicationDbContextFactory.cs",
-              "RelativeDocumentMoniker": "Yummiez\\Data\\ApplicationDbContextFactory.cs",
-              "ToolTip": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Data\\ApplicationDbContextFactory.cs",
-              "RelativeToolTip": "Yummiez\\Data\\ApplicationDbContextFactory.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAABAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Program.cs",
+              "RelativeDocumentMoniker": "Yummiez\\Program.cs",
+              "ToolTip": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Program.cs",
+              "RelativeToolTip": "Yummiez\\Program.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAAAC8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-12T21:25:11.605Z",
+              "WhenOpened": "2026-02-19T21:19:38.479Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\appsettings.json",
-              "RelativeDocumentMoniker": "Yummiez\\appsettings.json",
-              "ToolTip": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\appsettings.json",
-              "RelativeToolTip": "Yummiez\\appsettings.json",
-              "ViewState": "AgIAAAEAAADAmpmZmZkOwAsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-02-12T21:14:51.016Z",
+              "DocumentIndex": 1,
+              "Title": "ScaffoldingReadMe.txt",
+              "DocumentMoniker": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\ScaffoldingReadMe.txt",
+              "RelativeDocumentMoniker": "Yummiez\\ScaffoldingReadMe.txt",
+              "ToolTip": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\ScaffoldingReadMe.txt",
+              "RelativeToolTip": "Yummiez\\ScaffoldingReadMe.txt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2026-02-19T21:17:38.427Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "20260212212824_InitialIdentity.cs",
+              "DocumentMoniker": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Data\\Migrations\\ApplicationDb\\20260212212824_InitialIdentity.cs",
+              "RelativeDocumentMoniker": "Yummiez\\Data\\Migrations\\ApplicationDb\\20260212212824_InitialIdentity.cs",
+              "ToolTip": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Data\\Migrations\\ApplicationDb\\20260212212824_InitialIdentity.cs",
+              "RelativeToolTip": "Yummiez\\Data\\Migrations\\ApplicationDb\\20260212212824_InitialIdentity.cs",
+              "ViewState": "AgIAAB0AAACAy8zMzMwVwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-12T21:28:25.023Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ApplicationDbContextFactory.cs",
+              "DocumentMoniker": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Data\\ApplicationDbContextFactory.cs",
+              "RelativeDocumentMoniker": "Yummiez\\Data\\ApplicationDbContextFactory.cs",
+              "ToolTip": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Data\\ApplicationDbContextFactory.cs",
+              "RelativeToolTip": "Yummiez\\Data\\ApplicationDbContextFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-12T21:25:11.605Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\appsettings.json",
+              "RelativeDocumentMoniker": "Yummiez\\appsettings.json",
+              "ToolTip": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\appsettings.json",
+              "RelativeToolTip": "Yummiez\\appsettings.json",
+              "ViewState": "AgIAAAEAAADAmpmZmZkOwAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-12T21:14:51.016Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "ApplicationDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Data\\ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "Yummiez\\Data\\ApplicationDbContext.cs",
-              "ToolTip": "C:\\Users\\emane\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\Amath\\source\\repos\\emanespitia\\CS392\\Yummiez\\Yummiez\\Data\\ApplicationDbContext.cs",
               "RelativeToolTip": "Yummiez\\Data\\ApplicationDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-12T21:06:33.517Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T21:06:33.517Z"
             }
           ]
         },
