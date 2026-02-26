@@ -1,4 +1,4 @@
-## Standard .gitignore for Visual Studio / .NET projects
+﻿## Standard .gitignore for Visual Studio / .NET projects
 ## Keeps editor/project specific and build artifacts out of source control
 
 # User-specific files
