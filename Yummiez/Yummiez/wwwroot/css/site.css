@@ -7,23 +7,23 @@
     --text-muted: #767676;
     --bg-light: #f7f7f7;
     --white: #ffffff;
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
     --radius-md: 12px;
     --radius-pill: 50px;
 }
 
 html {
-  font-size: 16px;
-  position: relative;
-  min-height: 100%;
+    font-size: 16px;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
-  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: var(--text-dark);
-  background-color: var(--white);
+    margin-bottom: 60px;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: var(--text-dark);
+    background-color: var(--white);
 }
 
 a {
@@ -91,7 +91,8 @@ a:hover {
 
 /* Hero Section */
 .hero-section {
-    background-color: var(--light-green); /* Fallback */
+    background-color: var(--light-green);
+    /* Fallback */
     /* You can add a background image here if desired */
     padding: 4rem 1rem;
     border-radius: var(--radius-md);
@@ -192,7 +193,8 @@ a:hover {
 .rating-badge {
     background-color: #f7f7f7;
     padding: 2px 6px;
-    border-radius: 50%; /* Circle? Or rounded rect */
+    border-radius: 50%;
+    /* Circle? Or rounded rect */
     border-radius: 4px;
     font-weight: 600;
     font-size: 0.85rem;
@@ -201,10 +203,74 @@ a:hover {
 
 /* Footer */
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
-  background-color: #f7f7f7;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+    background-color: #f7f7f7;
+}
+
+/* Card Image Placeholder (replaces hardcoded images) */
+.card-img-top-placeholder {
+    height: 160px;
+    background: linear-gradient(135deg, var(--light-green), #c8e6c9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-green);
+    font-size: 2.5rem;
+}
+
+/* Restaurant Detail Card */
+.detail-card {
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.detail-card-header {
+    background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+    color: var(--white);
+    padding: 2rem;
+    text-align: center;
+}
+
+.detail-card-header h2 {
+    color: var(--white);
+    margin-bottom: 0.5rem;
+    font-weight: 800;
+}
+
+.detail-info-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.75rem;
+    background-color: var(--bg-light);
+    border-radius: 8px;
+}
+
+.detail-info-item i {
+    font-size: 1.1rem;
+    margin-top: 0.15rem;
+}
+
+/* Navbar auth buttons alignment */
+.navbar-nav .nav-item form {
+    margin: 0;
+}
+
+/* Restaurant Card Images */
+.restaurant-card-img {
+    height: 180px;
+    object-fit: cover;
+    width: 100%;
+}
+
+/* Detail Page Image */
+.detail-card-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
 }

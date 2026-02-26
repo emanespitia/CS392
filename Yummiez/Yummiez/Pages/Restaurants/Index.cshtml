@@ -2,77 +2,77 @@
 @model Yummiez.Pages.Restaurants.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Restaurants";
 }
 
-<h1>Index</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="section-title mb-0">All Restaurants</h2>
+    <a asp-page="Create" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i>Add Restaurant
+    </a>
+</div>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Restaurant[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Restaurant[0].OwnerName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Restaurant[0].Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Restaurant[0].Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Restaurant[0].IsOpen)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Restaurant[0].AdminId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Restaurant[0].CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Restaurant[0].UpdatedAt)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Restaurant) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OwnerName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsOpen)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AdminId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedAt)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.RestaurantId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.RestaurantId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.RestaurantId">Delete</a>
-            </td>
-        </tr>
+@if (Model.Restaurant.Any())
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model.Restaurant)
+        {
+            <div class="col">
+                <div class="card restaurant-card h-100">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@item.ImageUrl" class="card-img-top restaurant-card-img" alt="@item.Name">
+                    }
+                    else
+                    {
+                        <div class="card-img-top-placeholder">
+                            <i class="fas fa-store"></i>
+                        </div>
+                    }
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="restaurant-name">@item.Name</h5>
+                            <span class="badge @(item.IsOpen == true ? "bg-success" : "bg-danger") rounded-pill">
+                                @(item.IsOpen == true ? "Open" : "Closed")
+                            </span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(item.Category))
+                        {
+                            <span class="badge bg-light text-dark border mb-2">@item.Category</span>
+                        }
+                        <p class="restaurant-meta mt-1">
+                            <i class="fas fa-user me-1"></i>@item.OwnerName
+                        </p>
+                        <p class="text-muted small mb-1">
+                            <i class="fas fa-map-marker-alt me-1"></i>@item.Address
+                        </p>
+                        @if (!string.IsNullOrEmpty(item.Phone))
+                        {
+                            <p class="text-muted small mb-0">
+                                <i class="fas fa-phone me-1"></i>@item.Phone
+                            </p>
+                        }
+                    </div>
+                    <div class="card-footer bg-transparent d-flex gap-2">
+                        <a asp-page="./Details" asp-route-id="@item.RestaurantId" class="btn btn-sm btn-outline-success">
+                            <i class="fas fa-eye me-1"></i>Details
+                        </a>
+                        <a asp-page="./Edit" asp-route-id="@item.RestaurantId" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit me-1"></i>Edit
+                        </a>
+                        <a asp-page="./Delete" asp-route-id="@item.RestaurantId" class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash me-1"></i>Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="text-center py-5">
+        <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+        <p class="text-muted fs-5">No restaurants yet. Add your first one!</p>
+    </div>
+}

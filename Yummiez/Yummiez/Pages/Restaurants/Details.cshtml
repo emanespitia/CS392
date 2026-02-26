@@ -2,66 +2,79 @@
 @model Yummiez.Pages.Restaurants.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Restaurant.Name;
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Restaurant</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Restaurant.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Restaurant.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Restaurant.OwnerName)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Restaurant.OwnerName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Restaurant.Address)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Restaurant.Address)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Restaurant.Phone)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Restaurant.Phone)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Restaurant.IsOpen)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Restaurant.IsOpen)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Restaurant.AdminId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Restaurant.AdminId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Restaurant.CreatedAt)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Restaurant.CreatedAt)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Restaurant.UpdatedAt)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Restaurant.UpdatedAt)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Restaurant.RestaurantId">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card detail-card">
+            @if (!string.IsNullOrEmpty(Model.Restaurant.ImageUrl))
+            {
+                <img src="@Model.Restaurant.ImageUrl" class="detail-card-img" alt="@Model.Restaurant.Name">
+            }
+            <div class="detail-card-header">
+                <h2>@Model.Restaurant.Name</h2>
+                @if (!string.IsNullOrEmpty(Model.Restaurant.Category))
+                {
+                    <span class="badge bg-light text-dark rounded-pill px-3 py-1 mb-2">@Model.Restaurant.Category</span>
+                }
+                <br />
+                <span class="badge @(Model.Restaurant.IsOpen == true ? "bg-success" : "bg-danger") rounded-pill px-3 py-2">
+                    <i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i>
+                    @(Model.Restaurant.IsOpen == true ? "Open Now" : "Closed")
+                </span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="detail-info-item">
+                            <i class="fas fa-user text-success me-2"></i>
+                            <div>
+                                <small class="text-muted">Owner</small>
+                                <p class="mb-0 fw-semibold">@Model.Restaurant.OwnerName</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-info-item">
+                            <i class="fas fa-map-marker-alt text-success me-2"></i>
+                            <div>
+                                <small class="text-muted">Address</small>
+                                <p class="mb-0 fw-semibold">@Model.Restaurant.Address</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-info-item">
+                            <i class="fas fa-phone text-success me-2"></i>
+                            <div>
+                                <small class="text-muted">Phone</small>
+                                <p class="mb-0 fw-semibold">@(Model.Restaurant.Phone ?? "Not available")</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-info-item">
+                            <i class="fas fa-calendar text-success me-2"></i>
+                            <div>
+                                <small class="text-muted">Added</small>
+                                <p class="mb-0 fw-semibold">@(Model.Restaurant.CreatedAt?.ToString("MMM dd, yyyy") ?? "N/A")</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent d-flex gap-2 p-3">
+                <a asp-page="./Edit" asp-route-id="@Model.Restaurant.RestaurantId" class="btn btn-primary">
+                    <i class="fas fa-edit me-1"></i>Edit
+                </a>
+                <a asp-page="./Index" class="btn btn-outline-secondary">
+                    <i class="fas fa-list me-1"></i>Back to List
+                </a>
+                <a asp-page="/Index" class="btn btn-outline-success">
+                    <i class="fas fa-home me-1"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

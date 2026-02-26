@@ -1,0 +1,98 @@
+@page
+@model Yummiez.Pages.Admin.IndexModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="section-title mb-0">
+        <i class="fas fa-shield-alt me-2"></i>Admin Dashboard
+    </h2>
+    <a asp-page="/Index" class="btn btn-outline-success">
+        <i class="fas fa-home me-1"></i>Back to Home
+    </a>
+</div>
+
+<div class="card detail-card">
+    <div class="detail-card-header">
+        <i class="fas fa-users fa-2x mb-2"></i>
+        <h2>User Management</h2>
+        <p class="mb-0 opacity-75">Manage user roles and permissions</p>
+    </div>
+    <div class="card-body p-4">
+        @if (Model.Users.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th><i class="fas fa-envelope me-1"></i>Email</th>
+                            <th><i class="fas fa-user-tag me-1"></i>Role</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr>
+                                <td>
+                                    <i class="fas fa-user-circle text-muted me-1"></i>
+                                    @user.Email
+                                </td>
+                                <td>
+                                    @if (user.Role == "Admin")
+                                    {
+                                        <span class="badge bg-success rounded-pill px-3 py-2">
+                                            <i class="fas fa-crown me-1"></i>Admin
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                            <i class="fas fa-user me-1"></i>User
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    @if (user.Role != "Admin")
+                                    {
+                                        <form method="post" asp-page-handler="Promote" class="d-inline">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="fas fa-arrow-up me-1"></i>Promote
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form method="post" asp-page-handler="Demote" class="d-inline">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-arrow-down me-1"></i>Demote
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-4">
+                <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No users found.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="mt-3">
+    <small class="text-muted">
+        <i class="fas fa-info-circle me-1"></i>
+        You cannot demote the last admin. At least one admin must always exist.
+    </small>
+</div>

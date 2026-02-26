@@ -12,7 +12,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>options.UseSqlServ
 builder.Services.AddDbContext<YummiezDbContext>(options =>options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationDbContext") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.")));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-    options.SignIn.RequireConfirmedAccount = true)
+    options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
@@ -42,6 +42,9 @@ app.MapRazorPages()
 using (var scope = app.Services.CreateScope())
 {
     await DbSeeder.SeedRolesAndAdminAsync(scope.ServiceProvider);
+
+    var yummiezDb = scope.ServiceProvider.GetRequiredService<YummiezDbContext>();
+    await DbSeeder.SeedRestaurantsAsync(yummiezDb);
 }
 
 app.Run();

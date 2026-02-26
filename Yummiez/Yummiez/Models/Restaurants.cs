@@ -36,6 +36,14 @@ namespace Yummiez.Models
         [Column("admin_id")]
         public int AdminId { get; set; }
 
+        [Column("category")]
+        [MaxLength(50)]
+        public string? Category { get; set; }
+
+        [Column("image_url")]
+        [MaxLength(500)]
+        public string? ImageUrl { get; set; }
+
         [Column("created_at")]
         public DateTime? CreatedAt { get; set; }
 
