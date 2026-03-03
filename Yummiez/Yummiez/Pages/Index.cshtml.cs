@@ -7,7 +7,7 @@ using Yummiez.Models;
 
 namespace Yummiez.Pages
 {
-    [AllowAnonymous]
+   // [AllowAnonymous]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
