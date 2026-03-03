@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,13 +12,16 @@ using Yummiez.Models;
 
 namespace Yummiez.Pages.Restaurants
 {
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly Yummiez.Data.YummiezDbContext _context;
+        private readonly ILogger<EditModel> _logger;
 
-        public EditModel(Yummiez.Data.YummiezDbContext context)
+        public EditModel(Yummiez.Data.YummiezDbContext context, ILogger<EditModel> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -53,6 +57,7 @@ namespace Yummiez.Pages.Restaurants
             try
             {
                 await _context.SaveChangesAsync();
+                _logger.LogInformation("Restaurant edited: ID={Id} by {User}", Restaurant.RestaurantId, User.Identity?.Name);
             }
             catch (DbUpdateConcurrencyException)
             {

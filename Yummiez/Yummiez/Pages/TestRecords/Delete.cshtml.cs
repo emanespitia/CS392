@@ -15,10 +15,12 @@ namespace Yummiez.Pages.TestRecords
     public class DeleteModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<DeleteModel> _logger;
 
-        public DeleteModel(ApplicationDbContext context)
+        public DeleteModel(ApplicationDbContext context, ILogger<DeleteModel> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -55,6 +57,7 @@ namespace Yummiez.Pages.TestRecords
                 TestEliasMissaEM = record;
                 _context.TestEliasMissaEM.Remove(TestEliasMissaEM);
                 await _context.SaveChangesAsync();
+                _logger.LogInformation("TestRecord deleted: ID={Id}, Name={Name} by {User}", id, TestEliasMissaEM.ProjectName, User.Identity?.Name);
             }
 
             return RedirectToPage("./Index");

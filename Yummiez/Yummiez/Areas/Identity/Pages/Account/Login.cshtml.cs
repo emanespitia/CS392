@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Yummiez.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class LoginModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -128,6 +129,7 @@ namespace Yummiez.Areas.Identity.Pages.Account
                 }
                 else
                 {
+                    _logger.LogWarning("Failed login attempt for email: {Email}", Input.Email);
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }

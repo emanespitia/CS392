@@ -15,10 +15,12 @@ namespace Yummiez.Pages.TestRecords
     public class CreateModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<CreateModel> _logger;
 
-        public CreateModel(ApplicationDbContext context)
+        public CreateModel(ApplicationDbContext context, ILogger<CreateModel> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IActionResult OnGet()
@@ -38,6 +40,7 @@ namespace Yummiez.Pages.TestRecords
 
             _context.TestEliasMissaEM.Add(TestEliasMissaEM);
             await _context.SaveChangesAsync();
+            _logger.LogInformation("TestRecord created: {Name} by {User}", TestEliasMissaEM.ProjectName, User.Identity?.Name);
 
             return RedirectToPage("./Index");
         }

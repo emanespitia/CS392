@@ -16,10 +16,12 @@ namespace Yummiez.Pages.TestRecords
     public class EditModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<EditModel> _logger;
 
-        public EditModel(ApplicationDbContext context)
+        public EditModel(ApplicationDbContext context, ILogger<EditModel> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -53,6 +55,7 @@ namespace Yummiez.Pages.TestRecords
             try
             {
                 await _context.SaveChangesAsync();
+                _logger.LogInformation("TestRecord edited: ID={Id} by {User}", TestEliasMissaEM.Id, User.Identity?.Name);
             }
             catch (DbUpdateConcurrencyException)
             {
