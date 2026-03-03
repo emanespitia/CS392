@@ -1,0 +1,146 @@
+# Yummiez — Milestone Gap Analysis
+
+## Summary
+
+Your project already covers a solid foundation. Below is a **milestone-by-milestone** breakdown of what's **done ✅**, what's **partially done ⚠️**, and what's **missing ❌**.
+
+---
+
+## 1. Database Implementation
+
+| Requirement | Status | Notes |
+|---|---|---|
+| Database tables exist | ✅ | [Restaurants](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Data/DbSeeder.cs#36-84), [TestEliasMissaEM](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Models/test_EliasMissa_EM.cs#6-26), + all Identity tables |
+| Sample data seeded | ✅ | [DbSeeder](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Data/DbSeeder.cs#9-85) seeds 5 restaurants + admin user + roles |
+| Table structure (columns, types, keys) | ✅ | Models have `[Key]`, `[Required]`, `[MaxLength]`, `[Column]` attributes |
+| Relationship / ER diagram | ⚠️ | **No diagram exists in the project.** You'll need to generate one for the deliverable |
+
+### What to Add
+- **ER / Class diagram** — Create a visual diagram showing the relationships between [Restaurants](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Data/DbSeeder.cs#36-84), [TestEliasMissaEM](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Models/test_EliasMissa_EM.cs#6-26), and the Identity tables (`AspNetUsers`, `AspNetRoles`, `AspNetUserRoles`, etc.). Tools like Visual Studio's DB diagram, dbdiagram.io, or draw.io work well.
+
+---
+
+## 2. Identity & Authentication
+
+| Requirement | Status | Notes |
+|---|---|---|
+| Identity framework | ✅ | `AddIdentity<IdentityUser, IdentityRole>` in [Program.cs](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Program.cs) |
+| User registration | ✅ | Scaffolded at `Areas/Identity/Pages/Account/Register` |
+| Login / Logout | ✅ | Scaffolded at `Areas/Identity/Pages/Account/Login` and `Logout` |
+| Password policies | ✅ | Default Identity password policies (uppercase, lowercase, digit, special char, min 6 chars) |
+| Secure session management | ✅ | Handled by Identity framework cookies |
+
+### What to Add
+- **Nothing code-wise** — This milestone is fully implemented.
+- **For the deliverable**: Prepare screenshots of Identity tables, Login/Register pages, and a brief written explanation of the auth workflow and password hashing (Identity uses PBKDF2 by default).
+
+---
+
+## 3. Role-Based Authorization
+
+| Requirement | Status | Notes |
+|---|---|---|
+| At least two roles defined | ✅ | [Admin](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Data/DbSeeder.cs#11-35) and [User](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Pages/Admin/Index.cshtml.cs#23-29) in [Constants/myRoles.cs](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Constants/myRoles.cs), seeded in [DbSeeder](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Data/DbSeeder.cs#9-85) |
+| Role-based auth implemented | ⚠️ | Only on `TestRecords` and [Admin](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Data/DbSeeder.cs#11-35) pages |
+| **ALL pages require authorization** | ❌ | [Restaurants](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Data/DbSeeder.cs#36-84) CRUD pages have **no** `[Authorize]` attribute |
+| Pages restrict by role | ⚠️ | TestRecords: Create/Edit/Delete = Admin-only, Index/Details = any authenticated user. Restaurants: **no restrictions at all** |
+| Access denied redirect | ✅ | Identity scaffolded [AccessDenied.cshtml](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Areas/Identity/Pages/Account/AccessDenied.cshtml) exists |
+
+### What to Add
+
+#### ❌ Add `[Authorize]` to ALL Restaurants pages:
+- [Pages/Restaurants/Index.cshtml.cs](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Pages/Restaurants/Index.cshtml.cs) — `[Authorize]` (any authenticated user can view)
+- [Pages/Restaurants/Details.cshtml.cs](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Pages/Restaurants/Details.cshtml.cs) — `[Authorize]` (any authenticated user)
+- [Pages/Restaurants/Create.cshtml.cs](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Pages/Restaurants/Create.cshtml.cs) — `[Authorize(Roles = "Admin")]`
+- [Pages/Restaurants/Edit.cshtml.cs](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Pages/Restaurants/Edit.cshtml.cs) — `[Authorize(Roles = "Admin")]`
+- [Pages/Restaurants/Delete.cshtml.cs](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Pages/Restaurants/Delete.cshtml.cs) — `[Authorize(Roles = "Admin")]`
+
+#### ⚠️ Consider global authorization:
+You could add a global fallback authorization policy in [Program.cs](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Program.cs) so that **all** pages require auth by default (and then explicitly allow anonymous for Index/Privacy if desired):
+```csharp
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
+```
+
+#### ⚠️ Index and Privacy pages:
+Your homepage ([Pages/Index.cshtml](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Pages/Index.cshtml)) and Privacy page currently have **no** `[Authorize]`. The milestone says "ALL application pages must require authorization." You need to either:
+- Add `[Authorize]` to those pages, **or**
+- Use the global fallback policy above and add `[AllowAnonymous]` only where justified (like the homepage).
+
+---
+
+## 4. CRUD Functionality
+
+| Requirement | Status | Notes |
+|---|---|---|
+| Full CRUD for Restaurants | ✅ | Create, Index (list), Details, Edit, Delete pages exist |
+| Full CRUD for TestRecords | ✅ | Create, Index, Details, Edit, Delete pages exist |
+| Validation implemented | ✅ | `[Required]`, `[StringLength]`, `[MaxLength]` on models |
+| Only authorized roles can modify | ⚠️ | TestRecords CUD is Admin-only ✅. **Restaurants CUD has no auth** ❌ |
+
+### What to Add
+- **Add `[Authorize(Roles = "Admin")]`** to Restaurants Create/Edit/Delete pages (same as milestone 3 fix above — fixing that fixes this too).
+
+---
+
+## 5. Logging & Error Handling (Optional)
+
+| Requirement | Status | Notes |
+|---|---|---|
+| Backend logging (ILogger) | ⚠️ | `ILogger` is injected in some pages (Error, Index, Privacy) but **not actively used** for custom logging |
+| Log exceptions | ❌ | No custom exception logging |
+| Log failed logins | ❌ | No custom logging in Login page |
+| Log critical operations | ❌ | No logging on CRUD operations |
+| Global exception handling | ⚠️ | Only `app.UseExceptionHandler("/Error")` for non-dev — basic |
+| Custom error page | ⚠️ | [Error.cshtml](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Pages/Error.cshtml) exists but is the **default template** — not customized |
+
+### What to Add
+
+#### ❌ Add custom logging in key areas:
+1. **Failed logins** — In `Areas/Identity/Pages/Account/Login.cshtml.cs`, add `_logger.LogWarning(...)` when login fails
+2. **CRUD operations** — Add `_logger.LogInformation(...)` in Create/Edit/Delete handlers for Restaurants and TestRecords
+3. **Exceptions** — Add `_logger.LogError(...)` in catch blocks
+
+#### ❌ Configure logging output:
+Add file logging in [Program.cs](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Program.cs) (e.g., using Serilog or a simple file logger), or at minimum configure console logging levels in [appsettings.json](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/appsettings.json):
+```json
+"Logging": {
+  "LogLevel": {
+    "Default": "Information",
+    "Microsoft.AspNetCore": "Warning",
+    "Yummiez": "Debug"
+  }
+}
+```
+
+#### ⚠️ Customize the error page:
+The current [Error.cshtml](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Pages/Error.cshtml) is the default ASP.NET template. Make it match your Yummiez branding/theme with a user-friendly message.
+
+#### ❌ Add global exception handling middleware (optional but impressive):
+```csharp
+// In Program.cs
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
+```
+
+---
+
+## Priority Action Items (Ordered)
+
+| Priority | Item | Milestone | Effort |
+|---|---|---|---|
+| 🔴 **1** | Add `[Authorize]` to all Restaurants pages | 3 & 4 | Low — ~5 min |
+| 🔴 **2** | Decide auth policy for Index/Privacy pages | 3 | Low — ~5 min |
+| 🟡 **3** | Create ER/relationship diagram | 1 | Medium — ~30 min |
+| 🟡 **4** | Add logging for failed logins and CRUD operations | 5 | Medium — ~30 min |
+| 🟡 **5** | Customize error page to match theme | 5 | Low — ~15 min |
+| 🟢 **6** | Prepare screenshots & explanations for deliverables | All | Medium — ~45 min |
+
+> [!IMPORTANT]
+> The **most critical gap** is that your [Restaurants](file:///c:/Users/eomis/CS392%20Project/CS392/Yummiez/Yummiez/Data/DbSeeder.cs#36-84) pages have **zero authorization**. This affects both Milestone 3 (Role-Based Authorization) and Milestone 4 (CRUD security). This is a quick fix — just add `[Authorize]` attributes to each page model.
+
+> [!NOTE]
+> Milestone 5 (Logging & Error Handling) is marked as **optional** in your milestones, so prioritize Milestones 1-4 first.
