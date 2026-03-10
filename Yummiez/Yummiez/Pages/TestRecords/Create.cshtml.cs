@@ -9,15 +9,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Yummiez.Data;
 using Yummiez.Models;
 
-namespace Yummiez.Pages.Restaurants
+namespace Yummiez.Pages.TestRecords
 {
     [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
-        private readonly Yummiez.Data.YummiezDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly ILogger<CreateModel> _logger;
 
-        public CreateModel(Yummiez.Data.YummiezDbContext context, ILogger<CreateModel> logger)
+        public CreateModel(ApplicationDbContext context, ILogger<CreateModel> logger)
         {
             _context = context;
             _logger = logger;
@@ -29,9 +29,8 @@ namespace Yummiez.Pages.Restaurants
         }
 
         [BindProperty]
-        public Restaurant Restaurant { get; set; } = default!;
+        public TestEliasMissaEM TestEliasMissaEM { get; set; } = default!;
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -39,9 +38,9 @@ namespace Yummiez.Pages.Restaurants
                 return Page();
             }
 
-            _context.Restaurants.Add(Restaurant);
+            _context.TestEliasMissaEM.Add(TestEliasMissaEM);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("Restaurant created: {Name} by {User}", Restaurant.Name, User.Identity?.Name);
+            _logger.LogInformation("TestRecord created: {Name} by {User}", TestEliasMissaEM.ProjectName, User.Identity?.Name);
 
             return RedirectToPage("./Index");
         }

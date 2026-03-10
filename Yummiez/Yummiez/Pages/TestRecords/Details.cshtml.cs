@@ -1,27 +1,27 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using Yummiez.Data;
 using Yummiez.Models;
 
-namespace Yummiez.Pages.Restaurants
+namespace Yummiez.Pages.TestRecords
 {
     [Authorize]
     public class DetailsModel : PageModel
     {
-        private readonly Yummiez.Data.YummiezDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DetailsModel(Yummiez.Data.YummiezDbContext context)
+        public DetailsModel(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public Restaurant Restaurant { get; set; } = default!;
+        public TestEliasMissaEM TestEliasMissaEM { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,12 +30,11 @@ namespace Yummiez.Pages.Restaurants
                 return NotFound();
             }
 
-            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(m => m.RestaurantId == id);
+            var record = await _context.TestEliasMissaEM.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (restaurant is not null)
+            if (record is not null)
             {
-                Restaurant = restaurant;
-
+                TestEliasMissaEM = record;
                 return Page();
             }
 

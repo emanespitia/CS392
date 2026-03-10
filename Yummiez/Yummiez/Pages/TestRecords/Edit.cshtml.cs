@@ -10,22 +10,22 @@ using Microsoft.EntityFrameworkCore;
 using Yummiez.Data;
 using Yummiez.Models;
 
-namespace Yummiez.Pages.Restaurants
+namespace Yummiez.Pages.TestRecords
 {
     [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
-        private readonly Yummiez.Data.YummiezDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly ILogger<EditModel> _logger;
 
-        public EditModel(Yummiez.Data.YummiezDbContext context, ILogger<EditModel> logger)
+        public EditModel(ApplicationDbContext context, ILogger<EditModel> logger)
         {
             _context = context;
             _logger = logger;
         }
 
         [BindProperty]
-        public Restaurant Restaurant { get; set; } = default!;
+        public TestEliasMissaEM TestEliasMissaEM { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -34,17 +34,15 @@ namespace Yummiez.Pages.Restaurants
                 return NotFound();
             }
 
-            var restaurant =  await _context.Restaurants.FirstOrDefaultAsync(m => m.RestaurantId == id);
-            if (restaurant == null)
+            var record = await _context.TestEliasMissaEM.FirstOrDefaultAsync(m => m.Id == id);
+            if (record == null)
             {
                 return NotFound();
             }
-            Restaurant = restaurant;
+            TestEliasMissaEM = record;
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -52,16 +50,16 @@ namespace Yummiez.Pages.Restaurants
                 return Page();
             }
 
-            _context.Attach(Restaurant).State = EntityState.Modified;
+            _context.Attach(TestEliasMissaEM).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("Restaurant edited: ID={Id} by {User}", Restaurant.RestaurantId, User.Identity?.Name);
+                _logger.LogInformation("TestRecord edited: ID={Id} by {User}", TestEliasMissaEM.Id, User.Identity?.Name);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RestaurantExists(Restaurant.RestaurantId))
+                if (!TestEliasMissaEMExists(TestEliasMissaEM.Id))
                 {
                     return NotFound();
                 }
@@ -74,9 +72,9 @@ namespace Yummiez.Pages.Restaurants
             return RedirectToPage("./Index");
         }
 
-        private bool RestaurantExists(int id)
+        private bool TestEliasMissaEMExists(int id)
         {
-            return _context.Restaurants.Any(e => e.RestaurantId == id);
+            return _context.TestEliasMissaEM.Any(e => e.Id == id);
         }
     }
 }

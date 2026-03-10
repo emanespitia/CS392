@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,23 +9,23 @@ using Microsoft.EntityFrameworkCore;
 using Yummiez.Data;
 using Yummiez.Models;
 
-namespace Yummiez.Pages.Restaurants
+namespace Yummiez.Pages.TestRecords
 {
-    [Authorize(Roles = "Admin,User")]
+    [Authorize]
     public class IndexModel : PageModel
     {
-        private readonly Yummiez.Data.YummiezDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public IndexModel(Yummiez.Data.YummiezDbContext context)
+        public IndexModel(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public IList<Restaurant> Restaurant { get;set; } = default!;
+        public IList<TestEliasMissaEM> TestEliasMissaEM { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
-            Restaurant = await _context.Restaurants.ToListAsync();
+            TestEliasMissaEM = await _context.TestEliasMissaEM.ToListAsync();
         }
     }
 }

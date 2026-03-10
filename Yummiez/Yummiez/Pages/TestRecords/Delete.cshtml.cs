@@ -9,22 +9,22 @@ using Microsoft.EntityFrameworkCore;
 using Yummiez.Data;
 using Yummiez.Models;
 
-namespace Yummiez.Pages.Restaurants
+namespace Yummiez.Pages.TestRecords
 {
     [Authorize(Roles = "Admin")]
     public class DeleteModel : PageModel
     {
-        private readonly Yummiez.Data.YummiezDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly ILogger<DeleteModel> _logger;
 
-        public DeleteModel(Yummiez.Data.YummiezDbContext context, ILogger<DeleteModel> logger)
+        public DeleteModel(ApplicationDbContext context, ILogger<DeleteModel> logger)
         {
             _context = context;
             _logger = logger;
         }
 
         [BindProperty]
-        public Restaurant Restaurant { get; set; } = default!;
+        public TestEliasMissaEM TestEliasMissaEM { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -33,12 +33,11 @@ namespace Yummiez.Pages.Restaurants
                 return NotFound();
             }
 
-            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(m => m.RestaurantId == id);
+            var record = await _context.TestEliasMissaEM.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (restaurant is not null)
+            if (record is not null)
             {
-                Restaurant = restaurant;
-
+                TestEliasMissaEM = record;
                 return Page();
             }
 
@@ -52,13 +51,13 @@ namespace Yummiez.Pages.Restaurants
                 return NotFound();
             }
 
-            var restaurant = await _context.Restaurants.FindAsync(id);
-            if (restaurant != null)
+            var record = await _context.TestEliasMissaEM.FindAsync(id);
+            if (record != null)
             {
-                Restaurant = restaurant;
-                _context.Restaurants.Remove(Restaurant);
+                TestEliasMissaEM = record;
+                _context.TestEliasMissaEM.Remove(TestEliasMissaEM);
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("Restaurant deleted: ID={Id}, Name={Name} by {User}", id, Restaurant.Name, User.Identity?.Name);
+                _logger.LogInformation("TestRecord deleted: ID={Id}, Name={Name} by {User}", id, TestEliasMissaEM.ProjectName, User.Identity?.Name);
             }
 
             return RedirectToPage("./Index");
