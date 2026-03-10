@@ -58,6 +58,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(); // Serve static files (CSS, JS, images) BEFORE auth so login page loads styles
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
 app.UseRouting();
@@ -65,7 +66,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
+app.MapStaticAssets().AllowAnonymous();
 app.MapRazorPages()
    .WithStaticAssets();
 
