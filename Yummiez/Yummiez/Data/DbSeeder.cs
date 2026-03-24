@@ -1,4 +1,4 @@
-﻿using Yummiez.Constants;
+using Yummiez.Constants;
 using Yummiez.Data;
 using Yummiez.Models;
 using Microsoft.AspNetCore.Identity;
@@ -10,11 +10,17 @@ namespace Yummiez.Data
     {
         public static async Task SeedRolesAndAdminAsync(IServiceProvider service)
         {
-            //seed roles
-            var userManager = service.GetService<UserManager<IdentityUser>>();
-            var roleManager = service.GetService<RoleManager<IdentityRole>>();
-            await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Roles.User.ToString()));
+            var userManager = service.GetRequiredService<UserManager<IdentityUser>>();
+            var roleManager = service.GetRequiredService<RoleManager<IdentityRole>>();
+
+            var roles = Enum.GetNames<Roles>();
+            foreach (var role in roles)
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
 
             //create admin user
             var user = new IdentityUser
@@ -29,7 +35,12 @@ namespace Yummiez.Data
             if (userInDb == null)
             {
                await userManager.CreateAsync(user, "Admin@123");
-               await userManager.AddToRoleAsync(user, Roles.Admin.ToString());
+               userInDb = user;
+            }
+
+            if (userInDb != null && !await userManager.IsInRoleAsync(userInDb, Roles.Admin.ToString()))
+            {
+                await userManager.AddToRoleAsync(userInDb, Roles.Admin.ToString());
             }
         }
 

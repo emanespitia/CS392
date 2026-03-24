@@ -72,9 +72,13 @@ app.MapRazorPages()
 
 using (var scope = app.Services.CreateScope())
 {
-    await DbSeeder.SeedRolesAndAdminAsync(scope.ServiceProvider);
+    var appIdentityDb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await appIdentityDb.Database.MigrateAsync();
 
     var yummiezDb = scope.ServiceProvider.GetRequiredService<YummiezDbContext>();
+    await yummiezDb.Database.MigrateAsync();
+
+    await DbSeeder.SeedRolesAndAdminAsync(scope.ServiceProvider);
     await DbSeeder.SeedRestaurantsAsync(yummiezDb);
 }
 
