@@ -12,6 +12,7 @@ namespace Yummiez.Data
         public DbSet<Restaurant> Restaurants { get; set; } = null!;
         public DbSet<Client> Clients { get; set; } = null!;
         public DbSet<Driver> Drivers { get; set; } = null!;
+        public DbSet<Order> Orders { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +33,14 @@ namespace Yummiez.Data
                 .HasIndex(d => d.IdentityUserId)
                 .HasFilter("[identity_user_id] IS NOT NULL")
                 .IsUnique();
+
+            modelBuilder.Entity<Order>()
+                .ToTable(tb => tb.UseSqlOutputClause(false));
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Restaurant)
+                .WithMany()
+                .HasForeignKey(o => o.RestaurantId);
         }
     }
 }

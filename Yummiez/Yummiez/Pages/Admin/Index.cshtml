@@ -14,6 +14,47 @@
     </a>
 </div>
 
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-store fa-2x text-success mb-2"></i>
+                <h3 class="fw-bold mb-0">@Model.TotalRestaurants</h3>
+                <small class="text-muted">Total Restaurants</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-door-open fa-2x text-success mb-2"></i>
+                <h3 class="fw-bold mb-0">@Model.OpenRestaurants</h3>
+                <small class="text-muted">Open Now</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-door-closed fa-2x text-danger mb-2"></i>
+                <h3 class="fw-bold mb-0">@Model.ClosedRestaurants</h3>
+                <small class="text-muted">Closed</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                <h3 class="fw-bold mb-0">@Model.TotalUsers</h3>
+                <small class="text-muted">Registered Users</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Management -->
 <div class="card detail-card">
     <div class="detail-card-header">
         <i class="fas fa-users fa-2x mb-2"></i>

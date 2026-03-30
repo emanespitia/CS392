@@ -1,0 +1,93 @@
+@page
+@model Yummiez.Pages.Orders.IndexModel
+
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="section-title mb-0">
+        <i class="fas fa-receipt me-2"></i>My Orders
+    </h2>
+    <a asp-page="/Restaurants/Index" class="btn btn-primary">
+        <i class="fas fa-utensils me-1"></i>Browse Restaurants
+    </a>
+</div>
+
+@if (Model.Orders.Any())
+{
+    <div class="row g-3">
+        @foreach (var order in Model.Orders)
+        {
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h5 class="fw-bold mb-1">
+                                    <i class="fas fa-store text-success me-1"></i>
+                                    @(order.Restaurant?.Name ?? "Restaurant")
+                                </h5>
+                                <small class="text-muted">Order #@order.OrderId</small>
+                            </div>
+                            @{
+                                var badgeClass = order.Status switch
+                                {
+                                    "Delivered" => "bg-success",
+                                    "OnTheWay" => "bg-primary",
+                                    "PickedUp" => "bg-info",
+                                    "Preparing" => "bg-warning text-dark",
+                                    _ => "bg-secondary"
+                                };
+                                var statusLabel = order.Status switch
+                                {
+                                    "OnTheWay" => "On the Way",
+                                    "PickedUp" => "Picked Up",
+                                    _ => order.Status
+                                };
+                            }
+                            <span class="badge @badgeClass rounded-pill px-3 py-2">@statusLabel</span>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt me-1"></i>@order.DeliveryAddress
+                            </small>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>@order.CreatedAt.ToString("MMM dd, yyyy h:mm tt")
+                            </small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            @if (order.Status != "Delivered")
+                            {
+                                <a asp-page="/Orders/Track" asp-route-id="@order.OrderId" class="btn btn-sm btn-success">
+                                    <i class="fas fa-map-marked-alt me-1"></i>Track Order
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="btn btn-sm btn-outline-success disabled">
+                                    <i class="fas fa-check me-1"></i>Delivered @(order.DeliveredAt?.ToString("h:mm tt") ?? "")
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No orders yet</h4>
+            <p class="text-muted mb-3">Browse restaurants and place your first order!</p>
+            <a asp-page="/Restaurants/Index" class="btn btn-primary">
+                <i class="fas fa-utensils me-1"></i>Browse Restaurants
+            </a>
+        </div>
+    </div>
+}

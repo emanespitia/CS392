@@ -20,7 +20,6 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
     font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: var(--text-dark);
     background-color: var(--white);
@@ -202,13 +201,37 @@ a:hover {
 }
 
 /* Footer */
-.footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    white-space: nowrap;
-    line-height: 60px;
+.footer-section {
     background-color: #f7f7f7;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 3rem;
+}
+
+.footer-section h5,
+.footer-section h6 {
+    color: var(--text-dark);
+}
+
+.footer-section a:hover {
+    color: var(--primary-green) !important;
+}
+
+/* Form Styles */
+.form-floating>.form-control:focus~label,
+.form-floating>.form-control:not(:placeholder-shown)~label,
+.form-floating>.form-select~label {
+    color: var(--primary-green);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.2rem rgba(0, 128, 55, 0.15);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
 }
 
 /* Card Image Placeholder (replaces hardcoded images) */

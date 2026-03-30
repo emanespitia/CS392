@@ -1,70 +1,107 @@
 ﻿@page
 @model Yummiez.Pages.Restaurants.CreateModel
 
-        @{
-        ViewData["Title"] = "Create";
-        }
-        
-        <h1>Create</h1>
-        
-    <h4>Restaurant</h4>
-    <hr />
-    <div class="row">
-    <div class="col-md-4">
-    <form method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Restaurant.Name" class="control-label"></label>
-                <input asp-for="Restaurant.Name" class="form-control" aria-required="true"/>
-                <span asp-validation-for="Restaurant.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Restaurant.OwnerName" class="control-label"></label>
-                <input asp-for="Restaurant.OwnerName" class="form-control" aria-required="true"/>
-                <span asp-validation-for="Restaurant.OwnerName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Restaurant.Address" class="control-label"></label>
-                <input asp-for="Restaurant.Address" class="form-control" aria-required="true"/>
-                <span asp-validation-for="Restaurant.Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Restaurant.Phone" class="control-label"></label>
-                <input asp-for="Restaurant.Phone" class="form-control" />
-                <span asp-validation-for="Restaurant.Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Restaurant.IsOpen" class="control-label"></label>
-                <input asp-for="Restaurant.IsOpen" class="form-control" />
-                <span asp-validation-for="Restaurant.IsOpen" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Restaurant.AdminId" class="control-label"></label>
-                <input asp-for="Restaurant.AdminId" class="form-control" />
-                <span asp-validation-for="Restaurant.AdminId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Restaurant.CreatedAt" class="control-label"></label>
-                <input asp-for="Restaurant.CreatedAt" class="form-control" />
-                <span asp-validation-for="Restaurant.CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Restaurant.UpdatedAt" class="control-label"></label>
-                <input asp-for="Restaurant.UpdatedAt" class="form-control" />
-                <span asp-validation-for="Restaurant.UpdatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+@{
+    ViewData["Title"] = "Add Restaurant";
+}
 
-<div>
-    <a asp-page="Index">Back to List</a>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card detail-card">
+            <div class="detail-card-header">
+                <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                <h2>Add New Restaurant</h2>
+                <p class="mb-0 opacity-75">Fill in the details below to add a restaurant</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Restaurant.Name" class="form-control" placeholder="Restaurant Name" aria-required="true" />
+                                <label asp-for="Restaurant.Name">
+                                    <i class="fas fa-store me-1"></i>Restaurant Name <span class="text-danger">*</span>
+                                </label>
+                                <span asp-validation-for="Restaurant.Name" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Restaurant.OwnerName" class="form-control" placeholder="Owner Name" aria-required="true" />
+                                <label asp-for="Restaurant.OwnerName">
+                                    <i class="fas fa-user me-1"></i>Owner Name <span class="text-danger">*</span>
+                                </label>
+                                <span asp-validation-for="Restaurant.OwnerName" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input asp-for="Restaurant.Address" class="form-control" placeholder="Address" aria-required="true" />
+                                <label asp-for="Restaurant.Address">
+                                    <i class="fas fa-map-marker-alt me-1"></i>Address <span class="text-danger">*</span>
+                                </label>
+                                <span asp-validation-for="Restaurant.Address" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Restaurant.Phone" class="form-control" placeholder="Phone" />
+                                <label asp-for="Restaurant.Phone">
+                                    <i class="fas fa-phone me-1"></i>Phone
+                                </label>
+                                <span asp-validation-for="Restaurant.Phone" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select asp-for="Restaurant.Category" class="form-select">
+                                    <option value="">-- Select Category --</option>
+                                    <option value="Burgers">🍔 Burgers</option>
+                                    <option value="Pizza">🍕 Pizza</option>
+                                    <option value="Sushi">🍣 Sushi</option>
+                                    <option value="Healthy">🥗 Healthy</option>
+                                    <option value="Desserts">🍩 Desserts</option>
+                                    <option value="Coffee">☕ Coffee</option>
+                                    <option value="Mexican">🌮 Mexican</option>
+                                </select>
+                                <label asp-for="Restaurant.Category">
+                                    <i class="fas fa-tag me-1"></i>Category
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input asp-for="Restaurant.ImageUrl" class="form-control" placeholder="Image URL" />
+                                <label asp-for="Restaurant.ImageUrl">
+                                    <i class="fas fa-image me-1"></i>Image URL
+                                </label>
+                                <span asp-validation-for="Restaurant.ImageUrl" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch ps-5 py-3 bg-light rounded">
+                                <input name="Restaurant.IsOpen" value="true" class="form-check-input" type="checkbox" role="switch" checked />
+                                <label class="form-check-label fw-semibold">
+                                    <i class="fas fa-door-open me-1"></i>Restaurant is Open
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>Create Restaurant
+                        </button>
+                        <a asp-page="./Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

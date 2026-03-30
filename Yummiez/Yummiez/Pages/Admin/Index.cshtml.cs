@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Yummiez.Data;
 
 namespace Yummiez.Pages.Admin
 {
@@ -11,14 +12,22 @@ namespace Yummiez.Pages.Admin
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly YummiezDbContext _context;
 
-        public IndexModel(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public IndexModel(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, YummiezDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _context = context;
         }
 
         public List<UserWithRole> Users { get; set; } = new();
+
+        // Dashboard stats
+        public int TotalRestaurants { get; set; }
+        public int OpenRestaurants { get; set; }
+        public int ClosedRestaurants { get; set; }
+        public int TotalUsers { get; set; }
 
         public class UserWithRole
         {
@@ -29,7 +38,14 @@ namespace Yummiez.Pages.Admin
 
         public async Task OnGetAsync()
         {
+            // Load stats
+            TotalRestaurants = await _context.Restaurants.CountAsync();
+            OpenRestaurants = await _context.Restaurants.CountAsync(r => r.IsOpen == true);
+            ClosedRestaurants = TotalRestaurants - OpenRestaurants;
+
             var allUsers = await _userManager.Users.ToListAsync();
+            TotalUsers = allUsers.Count;
+
             foreach (var user in allUsers)
             {
                 var roles = await _userManager.GetRolesAsync(user);
@@ -55,6 +71,7 @@ namespace Yummiez.Pages.Admin
                 {
                     await _userManager.RemoveFromRoleAsync(user, "User");
                 }
+                TempData["SuccessMessage"] = $"User '{user.Email}' has been promoted to Admin!";
             }
             return RedirectToPage();
         }
@@ -76,6 +93,11 @@ namespace Yummiez.Pages.Admin
                     {
                         await _userManager.AddToRoleAsync(user, "User");
                     }
+                    TempData["SuccessMessage"] = $"User '{user.Email}' has been demoted to User.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Cannot demote the last admin. At least one admin must always exist.";
                 }
             }
             return RedirectToPage();

@@ -11,10 +11,10 @@
         <p class="hero-subtitle">Order from your favorite local restaurants.</p>
         
         <div class="search-bar-container mt-4">
-            <form class="d-flex">
-                <input class="form-control search-input" type="search" placeholder="Enter delivery address" aria-label="Search">
+            <form method="get" class="d-flex">
+                <input name="SearchTerm" value="@Model.SearchTerm" class="form-control search-input" type="search" placeholder="Search restaurants by name or address..." aria-label="Search">
                 <button class="btn btn-primary search-btn" type="submit">
-                    <i class="fas fa-arrow-right"></i>
+                    <i class="fas fa-search"></i>
                 </button>
             </form>
         </div>

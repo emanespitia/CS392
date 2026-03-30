@@ -42,6 +42,19 @@
                                 <i class="fas fa-utensils me-1"></i>Restaurants
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/About">
+                                <i class="fas fa-info-circle me-1"></i>About
+                            </a>
+                        </li>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Orders/Index">
+                                    <i class="fas fa-receipt me-1"></i>My Orders
+                                </a>
+                            </li>
+                        }
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
@@ -83,13 +96,53 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <!-- Toast Container -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <div>@TempData["SuccessMessage"]</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <div>@TempData["ErrorMessage"]</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer-section">
         <div class="container">
-            &copy; 2026 - Yummiez - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <div class="row py-4">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h5 class="fw-bold text-success"><i class="fas fa-hamburger me-2"></i>Yummiez</h5>
+                    <p class="text-muted small mb-0">Delicious food, delivered fast.<br/>A CS392 Web Application Project.</p>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <h6 class="fw-bold">Quick Links</h6>
+                    <ul class="list-unstyled small">
+                        <li><a asp-page="/Index" class="text-muted text-decoration-none"><i class="fas fa-home me-1"></i>Home</a></li>
+                        <li><a asp-page="/Restaurants/Index" class="text-muted text-decoration-none"><i class="fas fa-utensils me-1"></i>Restaurants</a></li>
+                        <li><a asp-page="/About" class="text-muted text-decoration-none"><i class="fas fa-info-circle me-1"></i>About</a></li>
+                        <li><a asp-page="/Privacy" class="text-muted text-decoration-none"><i class="fas fa-shield-alt me-1"></i>Privacy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="fw-bold">Built With</h6>
+                    <p class="text-muted small mb-1"><i class="fas fa-server me-1"></i>ASP.NET Core 9.0</p>
+                    <p class="text-muted small mb-1"><i class="fas fa-database me-1"></i>Azure SQL Server</p>
+                    <p class="text-muted small mb-0"><i class="fas fa-palette me-1"></i>Bootstrap 5</p>
+                </div>
+            </div>
+            <div class="border-top pt-3 pb-2 text-center">
+                <small class="text-muted">&copy; 2026 Yummiez &mdash; CS392 Web Application Development</small>
+            </div>
         </div>
     </footer>
 
@@ -100,4 +153,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
