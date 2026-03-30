@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Yummiez.Constants;
+using Yummiez.Data;
 
 namespace Yummiez.Pages.Admin
 {
@@ -11,11 +13,16 @@ namespace Yummiez.Pages.Admin
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly YummiezDbContext _yummiezDbContext;
 
-        public IndexModel(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public IndexModel(
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            YummiezDbContext yummiezDbContext)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _yummiezDbContext = yummiezDbContext;
         }
 
         public List<UserWithRole> Users { get; set; } = new();
@@ -26,6 +33,14 @@ namespace Yummiez.Pages.Admin
             public string Email { get; set; } = null!;
             public string Role { get; set; } = null!;
         }
+
+        public IReadOnlyList<string> AssignableRoles { get; } =
+        [
+            Roles.User.ToString(),
+            Roles.Driver.ToString(),
+            Roles.Admin.ToString(),
+            Roles.Manager.ToString()
+        ];
 
         public async Task OnGetAsync()
         {
@@ -42,41 +57,94 @@ namespace Yummiez.Pages.Admin
             }
         }
 
-        public async Task<IActionResult> OnPostPromoteAsync(string userId)
+        public async Task<IActionResult> OnPostUpdateRoleAsync(string userId, string role)
         {
+            if (!AssignableRoles.Contains(role))
+            {
+                return RedirectToPage();
+            }
+
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                if (!await _userManager.IsInRoleAsync(user, "Admin"))
+                if (!await _roleManager.RoleExistsAsync(role))
                 {
-                    await _userManager.AddToRoleAsync(user, "Admin");
+                    await _roleManager.CreateAsync(new IdentityRole(role));
                 }
-                if (await _userManager.IsInRoleAsync(user, "User"))
+
+                var isAdmin = await _userManager.IsInRoleAsync(user, Roles.Admin.ToString());
+                if (isAdmin && role != Roles.Admin.ToString())
                 {
-                    await _userManager.RemoveFromRoleAsync(user, "User");
+                    var admins = await _userManager.GetUsersInRoleAsync(Roles.Admin.ToString());
+                    if (admins.Count <= 1)
+                    {
+                        return RedirectToPage();
+                    }
                 }
+
+                foreach (var assignableRole in AssignableRoles)
+                {
+                    if (await _userManager.IsInRoleAsync(user, assignableRole))
+                    {
+                        await _userManager.RemoveFromRoleAsync(user, assignableRole);
+                    }
+                }
+
+                await _userManager.AddToRoleAsync(user, role);
             }
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnPostDemoteAsync(string userId)
+        public async Task<IActionResult> OnPostDeleteAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                // Prevent demoting the last admin
-                var admins = await _userManager.GetUsersInRoleAsync("Admin");
-                if (admins.Count > 1)
+                var currentUserId = _userManager.GetUserId(User);
+                if (user.Id == currentUserId)
                 {
-                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                    return RedirectToPage();
+                }
+
+                var isAdmin = await _userManager.IsInRoleAsync(user, Roles.Admin.ToString());
+                if (isAdmin)
+                {
+                    var admins = await _userManager.GetUsersInRoleAsync(Roles.Admin.ToString());
+                    if (admins.Count <= 1)
                     {
-                        await _userManager.RemoveFromRoleAsync(user, "Admin");
-                    }
-                    if (!await _userManager.IsInRoleAsync(user, "User"))
-                    {
-                        await _userManager.AddToRoleAsync(user, "User");
+                        return RedirectToPage();
                     }
                 }
+
+                // Domain tables can keep foreign-key references to the Identity user.
+                // Remove those dependent rows first so the Identity delete won't fail.
+                // Some deployments may use either `user_id` or `identity_user_id`, so we handle both safely.
+                var uid = user.Id;
+                await _yummiezDbContext.Database.ExecuteSqlInterpolatedAsync($@"
+                    DECLARE @uid NVARCHAR(450) = {uid};
+
+                    -- Drivers
+                    IF COL_LENGTH('dbo.Drivers', 'user_id') IS NOT NULL
+                    BEGIN
+                        EXEC(N'DELETE FROM dbo.Drivers WHERE user_id = @p_uid', N'@p_uid NVARCHAR(450)', @p_uid = @uid);
+                    END;
+                    IF COL_LENGTH('dbo.Drivers', 'identity_user_id') IS NOT NULL
+                    BEGIN
+                        EXEC(N'DELETE FROM dbo.Drivers WHERE identity_user_id = @p_uid', N'@p_uid NVARCHAR(450)', @p_uid = @uid);
+                    END;
+
+                    -- Clients
+                    IF COL_LENGTH('dbo.Clients', 'user_id') IS NOT NULL
+                    BEGIN
+                        EXEC(N'DELETE FROM dbo.Clients WHERE user_id = @p_uid', N'@p_uid NVARCHAR(450)', @p_uid = @uid);
+                    END;
+                    IF COL_LENGTH('dbo.Clients', 'identity_user_id') IS NOT NULL
+                    BEGIN
+                        EXEC(N'DELETE FROM dbo.Clients WHERE identity_user_id = @p_uid', N'@p_uid NVARCHAR(450)', @p_uid = @uid);
+                    END;
+                ");
+
+                await _userManager.DeleteAsync(user);
             }
             return RedirectToPage();
         }

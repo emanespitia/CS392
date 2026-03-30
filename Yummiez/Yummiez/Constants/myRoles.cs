@@ -6,6 +6,7 @@ namespace Yummiez.Constants
         User,
         Client,
         Driver,
+        Manager,
         RestaurantOwner,
     }
 
