@@ -1,0 +1,238 @@
+@page "{id:int}"
+@model Yummiez.Pages.Orders.TrackModel
+
+@{
+    ViewData["Title"] = "Track Your Order";
+}
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <!-- Order Info Header -->
+        <div class="card detail-card mb-3">
+            <div class="detail-card-header py-3">
+                <h2 class="mb-1"><i class="fas fa-truck me-2"></i>Order #@Model.Order.OrderId</h2>
+                <p class="mb-0 opacity-75">From <strong>@Model.Order.Restaurant?.Name</strong> → @Model.Order.DeliveryAddress</p>
+            </div>
+        </div>
+
+        <!-- Status Progress Bar -->
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center position-relative">
+                    <div class="progress w-100 position-absolute" style="height:4px; z-index:0;">
+                        <div class="progress-bar bg-success" id="progressBar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div class="status-step text-center" style="z-index:1;" data-step="Placed">
+                        <div class="status-dot bg-secondary" id="dot-Placed">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <small class="d-block mt-1">Placed</small>
+                    </div>
+                    <div class="status-step text-center" style="z-index:1;" data-step="Preparing">
+                        <div class="status-dot bg-secondary" id="dot-Preparing">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <small class="d-block mt-1">Preparing</small>
+                    </div>
+                    <div class="status-step text-center" style="z-index:1;" data-step="PickedUp">
+                        <div class="status-dot bg-secondary" id="dot-PickedUp">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <small class="d-block mt-1">Picked Up</small>
+                    </div>
+                    <div class="status-step text-center" style="z-index:1;" data-step="OnTheWay">
+                        <div class="status-dot bg-secondary" id="dot-OnTheWay">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <small class="d-block mt-1">On the Way</small>
+                    </div>
+                    <div class="status-step text-center" style="z-index:1;" data-step="Delivered">
+                        <div class="status-dot bg-secondary" id="dot-Delivered">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <small class="d-block mt-1">Delivered</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Driver Info -->
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body py-3 d-flex align-items-center">
+                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style="width:50px;height:50px;">
+                    <i class="fas fa-user fa-lg"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold" id="driverName">@Model.Order.DriverName</h6>
+                    <small class="text-muted" id="statusText">Placing your order...</small>
+                </div>
+                <div class="ms-auto">
+                    <span class="badge bg-success rounded-pill px-3 py-2" id="statusBadge">
+                        <i class="fas fa-spinner fa-spin me-1"></i><span id="statusLabel">Placed</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div id="map" style="height: 450px; border-radius: 0.5rem;"></div>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <a asp-page="/Orders/Index" class="btn btn-outline-success">
+                <i class="fas fa-list me-1"></i>My Orders
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .status-dot {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.85rem;
+        margin: 0 auto;
+        transition: all 0.3s ease;
+    }
+    .status-dot.active {
+        background-color: #008037 !important;
+        transform: scale(1.15);
+        box-shadow: 0 0 0 4px rgba(0,128,55,0.2);
+    }
+    .status-dot.completed {
+        background-color: #008037 !important;
+    }
+    .status-step small {
+        font-size: 0.7rem;
+        color: #6c757d;
+    }
+</style>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    const orderId = @Model.Order.OrderId;
+    const steps = ["Placed", "Preparing", "PickedUp", "OnTheWay", "Delivered"];
+    const statusMessages = {
+        "Placed": "Your order has been placed!",
+        "Preparing": "The restaurant is preparing your food...",
+        "PickedUp": "Your driver just picked up the order!",
+        "OnTheWay": "Your driver is on the way!",
+        "Delivered": "Your order has been delivered! 🎉"
+    };
+
+    // Initialize map
+    const restaurantLat = @Model.Order.RestaurantLat;
+    const restaurantLng = @Model.Order.RestaurantLng;
+    const destLat = @Model.Order.DestLat;
+    const destLng = @Model.Order.DestLng;
+
+    const map = L.map('map').setView(
+        [(restaurantLat + destLat) / 2, (restaurantLng + destLng) / 2],
+        13
+    );
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Restaurant marker (green)
+    const restaurantIcon = L.divIcon({
+        html: '<div style="background:#008037;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">🏪</div>',
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+        className: ''
+    });
+    L.marker([restaurantLat, restaurantLng], { icon: restaurantIcon })
+        .addTo(map)
+        .bindPopup('<b>@Model.Order.Restaurant?.Name</b><br/>Pickup Location');
+
+    // Destination marker (red)
+    const destIcon = L.divIcon({
+        html: '<div style="background:#c62828;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">📍</div>',
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+        className: ''
+    });
+    L.marker([destLat, destLng], { icon: destIcon })
+        .addTo(map)
+        .bindPopup('<b>Delivery Address</b><br/>@Model.Order.DeliveryAddress');
+
+    // Route line
+    L.polyline([[restaurantLat, restaurantLng], [destLat, destLng]], {
+        color: '#008037', weight: 3, dashArray: '8', opacity: 0.6
+    }).addTo(map);
+
+    // Driver marker (moving)
+    const driverIcon = L.divIcon({
+        html: '<div style="background:#1565c0;color:white;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:18px;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.4);">🚗</div>',
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        className: ''
+    });
+    const driverMarker = L.marker([restaurantLat, restaurantLng], { icon: driverIcon })
+        .addTo(map)
+        .bindPopup('Driver: @Model.Order.DriverName');
+
+    function updateStatus(status) {
+        const idx = steps.indexOf(status);
+        const progress = (idx / (steps.length - 1)) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+
+        steps.forEach((s, i) => {
+            const dot = document.getElementById('dot-' + s);
+            if (i < idx) dot.className = 'status-dot completed';
+            else if (i === idx) dot.className = 'status-dot active';
+            else dot.className = 'status-dot bg-secondary';
+        });
+
+        document.getElementById('statusText').textContent = statusMessages[status] || '';
+        document.getElementById('statusLabel').textContent = status === 'OnTheWay' ? 'On the Way' : status === 'PickedUp' ? 'Picked Up' : status;
+
+        if (status === 'Delivered') {
+            document.getElementById('statusBadge').innerHTML = '<i class="fas fa-check me-1"></i>Delivered';
+        }
+    }
+
+    // Initial status
+    updateStatus('@Model.Order.Status');
+
+    // Poll for updates
+    let polling = true;
+    async function pollTracker() {
+        if (!polling) return;
+        try {
+            const res = await fetch('/api/orders/' + orderId + '/track');
+            if (!res.ok) return;
+            const data = await res.json();
+
+            driverMarker.setLatLng([data.driverLat, data.driverLng]);
+            map.panTo([data.driverLat, data.driverLng], { animate: true });
+            updateStatus(data.status);
+
+            if (data.status === 'Delivered') {
+                polling = false;
+                driverMarker.bindPopup('Delivered! 🎉').openPopup();
+                return;
+            }
+        } catch (e) {
+            console.error('Tracking error:', e);
+        }
+        setTimeout(pollTracker, 2000);
+    }
+
+    // Start polling after a short delay
+    setTimeout(pollTracker, 2000);
+</script>

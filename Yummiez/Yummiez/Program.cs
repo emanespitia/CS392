@@ -69,6 +69,7 @@ app.UseAuthorization();
 app.MapStaticAssets().AllowAnonymous();
 app.MapRazorPages()
    .WithStaticAssets();
+app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {

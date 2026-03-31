@@ -1,0 +1,168 @@
+@page
+@model Yummiez.Pages.AboutModel
+@{
+    ViewData["Title"] = "About Yummiez";
+}
+
+<div class="row justify-content-center mb-5">
+    <div class="col-md-10">
+        <!-- Hero -->
+        <div class="card detail-card mb-4">
+            <div class="detail-card-header text-center">
+                <i class="fas fa-hamburger fa-3x mb-3"></i>
+                <h1 class="display-5 fw-bold">About Yummiez</h1>
+                <p class="lead mb-0 opacity-75">Connecting hungry people with great local restaurants</p>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h4 class="fw-bold"><i class="fas fa-bullseye text-success me-2"></i>Our Mission</h4>
+                        <p class="text-muted">
+                            Yummiez is a food delivery platform built to make ordering from your favorite 
+                            local restaurants fast, easy, and enjoyable. We believe everyone deserves a great 
+                            meal delivered to their door.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="fw-bold"><i class="fas fa-laptop-code text-success me-2"></i>The Project</h4>
+                        <p class="text-muted">
+                            This application was built as a final project for CS392 — Web Application Development.
+                            It demonstrates full-stack web development including authentication, role-based 
+                            authorization, database management, and responsive UI design.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="card detail-card mb-4">
+            <div class="card-body p-4">
+                <h3 class="fw-bold mb-4"><i class="fas fa-tools text-success me-2"></i>Technology Stack</h3>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="detail-info-item h-100">
+                            <i class="fas fa-server text-success me-2"></i>
+                            <div>
+                                <small class="text-muted">Backend</small>
+                                <p class="mb-0 fw-semibold">ASP.NET Core 9.0</p>
+                                <small class="text-muted">Razor Pages, C#</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-info-item h-100">
+                            <i class="fas fa-database text-success me-2"></i>
+                            <div>
+                                <small class="text-muted">Database</small>
+                                <p class="mb-0 fw-semibold">Azure SQL Server</p>
+                                <small class="text-muted">Entity Framework Core</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-info-item h-100">
+                            <i class="fas fa-lock text-success me-2"></i>
+                            <div>
+                                <small class="text-muted">Authentication</small>
+                                <p class="mb-0 fw-semibold">ASP.NET Identity</p>
+                                <small class="text-muted">Role-based Authorization</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-info-item h-100">
+                            <i class="fas fa-palette text-success me-2"></i>
+                            <div>
+                                <small class="text-muted">Frontend</small>
+                                <p class="mb-0 fw-semibold">Bootstrap 5</p>
+                                <small class="text-muted">Custom CSS, Font Awesome</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-info-item h-100">
+                            <i class="fas fa-cloud text-success me-2"></i>
+                            <div>
+                                <small class="text-muted">Hosting</small>
+                                <p class="mb-0 fw-semibold">Microsoft Azure</p>
+                                <small class="text-muted">Cloud Database</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-info-item h-100">
+                            <i class="fas fa-code-branch text-success me-2"></i>
+                            <div>
+                                <small class="text-muted">Version Control</small>
+                                <p class="mb-0 fw-semibold">Git &amp; GitHub</p>
+                                <small class="text-muted">Collaborative Development</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="card detail-card mb-4">
+            <div class="card-body p-4">
+                <h3 class="fw-bold mb-4"><i class="fas fa-star text-success me-2"></i>Key Features</h3>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start mb-3">
+                            <span class="badge bg-success rounded-pill me-3 mt-1">✓</span>
+                            <div>
+                                <strong>User Registration &amp; Authentication</strong>
+                                <p class="text-muted small mb-0">Secure sign-up, login, and password management</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <span class="badge bg-success rounded-pill me-3 mt-1">✓</span>
+                            <div>
+                                <strong>Role-Based Authorization</strong>
+                                <p class="text-muted small mb-0">Admin and User roles with different permissions</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <span class="badge bg-success rounded-pill me-3 mt-1">✓</span>
+                            <div>
+                                <strong>Restaurant CRUD Operations</strong>
+                                <p class="text-muted small mb-0">Create, read, update, and delete restaurants</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start mb-3">
+                            <span class="badge bg-success rounded-pill me-3 mt-1">✓</span>
+                            <div>
+                                <strong>Category Filtering</strong>
+                                <p class="text-muted small mb-0">Browse restaurants by cuisine type</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <span class="badge bg-success rounded-pill me-3 mt-1">✓</span>
+                            <div>
+                                <strong>Search Functionality</strong>
+                                <p class="text-muted small mb-0">Search restaurants by name or address</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-3">
+                            <span class="badge bg-success rounded-pill me-3 mt-1">✓</span>
+                            <div>
+                                <strong>Admin Dashboard</strong>
+                                <p class="text-muted small mb-0">Manage users, promote/demote roles</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a asp-page="/Index" class="btn btn-primary btn-lg">
+                <i class="fas fa-home me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
+</div>

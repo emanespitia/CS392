@@ -59,6 +59,7 @@ namespace Yummiez.Pages.Restaurants
                 _context.Restaurants.Remove(Restaurant);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Restaurant deleted: ID={Id}, Name={Name} by {User}", id, Restaurant.Name, User.Identity?.Name);
+                TempData["SuccessMessage"] = $"Restaurant '{Restaurant.Name}' was deleted successfully!";
             }
 
             return RedirectToPage("./Index");

@@ -52,12 +52,14 @@ namespace Yummiez.Pages.Restaurants
                 return Page();
             }
 
+            Restaurant.UpdatedAt = DateTime.UtcNow;
             _context.Attach(Restaurant).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Restaurant edited: ID={Id} by {User}", Restaurant.RestaurantId, User.Identity?.Name);
+                TempData["SuccessMessage"] = $"Restaurant '{Restaurant.Name}' was updated successfully!";
             }
             catch (DbUpdateConcurrencyException)
             {

@@ -39,9 +39,12 @@ namespace Yummiez.Pages.Restaurants
                 return Page();
             }
 
+            Restaurant.CreatedAt = DateTime.UtcNow;
+            Restaurant.AdminId = 0;
             _context.Restaurants.Add(Restaurant);
             await _context.SaveChangesAsync();
             _logger.LogInformation("Restaurant created: {Name} by {User}", Restaurant.Name, User.Identity?.Name);
+            TempData["SuccessMessage"] = $"Restaurant '{Restaurant.Name}' was created successfully!";
 
             return RedirectToPage("./Index");
         }
