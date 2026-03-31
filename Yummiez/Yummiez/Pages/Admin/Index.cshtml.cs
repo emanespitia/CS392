@@ -136,7 +136,7 @@ namespace Yummiez.Pages.Admin
                 // Remove those dependent rows first so the Identity delete won't fail.
                 // Some deployments may use either `user_id` or `identity_user_id`, so we handle both safely.
                 var uid = user.Id;
-                await _yummiezDbContext.Database.ExecuteSqlInterpolatedAsync($@"
+                await _context.Database.ExecuteSqlInterpolatedAsync($@"
                     DECLARE @uid NVARCHAR(450) = {uid};
 
                     -- Drivers
