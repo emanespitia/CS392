@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
@@ -49,6 +49,14 @@
                         </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
+                            @if (!User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/Cart/Index">
+                                        <i class="fas fa-shopping-cart me-1"></i>Cart
+                                    </a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-page="/Orders/Index">
                                     <i class="fas fa-receipt me-1"></i>My Orders

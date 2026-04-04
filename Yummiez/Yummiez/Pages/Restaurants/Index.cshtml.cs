@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +11,7 @@ using Yummiez.Models;
 
 namespace Yummiez.Pages.Restaurants
 {
-    [Authorize(Roles = "Admin,User")]
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly Yummiez.Data.YummiezDbContext _context;

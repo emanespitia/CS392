@@ -7,7 +7,7 @@ using Yummiez.Models;
 
 namespace Yummiez.Pages.Orders
 {
-    [Authorize(Roles = "Admin,User")]
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly YummiezDbContext _context;

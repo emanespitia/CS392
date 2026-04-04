@@ -1,0 +1,87 @@
+@page
+@model Yummiez.Pages.Cart.IndexModel
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="section-title mb-0">
+        <i class="fas fa-shopping-cart me-2"></i>Your Cart
+    </h2>
+    <a asp-page="/Restaurants/Index" class="btn btn-outline-primary">
+        <i class="fas fa-utensils me-1"></i>Continue Shopping
+    </a>
+</div>
+
+@if (Model.Items.Any())
+{
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body">
+            @for (var i = 0; i < Model.Items.Count; i++)
+            {
+                var item = Model.Items[i];
+                <div class="d-flex justify-content-between align-items-center border rounded p-3 mb-2">
+                    <div>
+                        <div class="fw-semibold">@item.ItemName</div>
+                        <small class="text-muted">@item.RestaurantName</small>
+                    </div>
+                    <div class="text-end">
+                        <div>$@item.UnitPrice.ToString("0.00") x @item.Quantity</div>
+                        <div class="fw-bold">$@item.TotalPrice.ToString("0.00")</div>
+                        <form method="post" asp-page-handler="Remove" class="mt-2">
+                            <input type="hidden" name="index" value="@i" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-trash me-1"></i>Remove
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <h5 class="mb-0">Total: $@Model.CartTotal.ToString("0.00")</h5>
+                <form method="post" asp-page-handler="Clear">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i>Clear Cart
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-success shadow-sm">
+        <div class="card-body">
+            <h5 class="fw-bold text-success mb-3">
+                <i class="fas fa-paper-plane me-2"></i>Checkout
+            </h5>
+            <form method="post" asp-page-handler="Checkout">
+                <div class="mb-3">
+                    <label asp-for="DeliveryAddress" class="form-label">Delivery Address</label>
+                    <input asp-for="DeliveryAddress" class="form-control" placeholder="Enter your delivery address..." />
+                    <span asp-validation-for="DeliveryAddress" class="text-danger small"></span>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-check me-1"></i>Place Order
+                </button>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card border-0 shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-shopping-basket fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">Your cart is empty</h4>
+            <p class="text-muted mb-3">Add items from a restaurant to get started.</p>
+            <a asp-page="/Restaurants/Index" class="btn btn-primary">
+                <i class="fas fa-utensils me-1"></i>Browse Restaurants
+            </a>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

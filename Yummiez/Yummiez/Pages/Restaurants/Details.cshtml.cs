@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Yummiez.Data;
+using Yummiez.Helpers;
 using Yummiez.Models;
 
 namespace Yummiez.Pages.Restaurants
@@ -23,6 +24,7 @@ namespace Yummiez.Pages.Restaurants
         }
 
         public Restaurant Restaurant { get; set; } = default!;
+        public List<MenuItemOption> MenuItems { get; set; } = new();
 
         [BindProperty]
         public string? DeliveryAddress { get; set; }
@@ -36,6 +38,7 @@ namespace Yummiez.Pages.Restaurants
             if (restaurant is not null)
             {
                 Restaurant = restaurant;
+                MenuItems = BuildMenuItems(restaurant);
                 return Page();
             }
 
@@ -44,11 +47,18 @@ namespace Yummiez.Pages.Restaurants
 
         public async Task<IActionResult> OnPostOrderAsync(int id)
         {
+            if (User.IsInRole("Admin"))
+            {
+                TempData["ErrorMessage"] = "Admins cannot place orders.";
+                return RedirectToPage(new { id });
+            }
+
             var restaurant = await _context.Restaurants.FirstOrDefaultAsync(m => m.RestaurantId == id);
             if (restaurant == null)
                 return NotFound();
 
             Restaurant = restaurant;
+            MenuItems = BuildMenuItems(restaurant);
 
             if (string.IsNullOrWhiteSpace(DeliveryAddress))
             {
@@ -85,6 +95,103 @@ namespace Yummiez.Pages.Restaurants
             await _context.SaveChangesAsync();
 
             return RedirectToPage("/Orders/Track", new { id = order.OrderId });
+        }
+
+        public async Task<IActionResult> OnPostAddToCartAsync(int id, string itemName, decimal unitPrice)
+        {
+            if (User.IsInRole("Admin"))
+            {
+                TempData["ErrorMessage"] = "Admins cannot add items to cart.";
+                return RedirectToPage(new { id });
+            }
+
+            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(m => m.RestaurantId == id);
+            if (restaurant == null)
+            {
+                return NotFound();
+            }
+
+            if (restaurant.IsOpen != true)
+            {
+                TempData["ErrorMessage"] = "This restaurant is currently closed.";
+                return RedirectToPage(new { id });
+            }
+
+            var cart = CartSessionHelper.GetCart(HttpContext.Session);
+            if (cart.Any() && cart.Any(i => i.RestaurantId != id))
+            {
+                TempData["ErrorMessage"] = "Please checkout or clear your current cart before ordering from another restaurant.";
+                return RedirectToPage(new { id });
+            }
+
+            var existing = cart.FirstOrDefault(i =>
+                i.RestaurantId == id &&
+                i.ItemName == itemName &&
+                i.UnitPrice == unitPrice);
+
+            if (existing != null)
+            {
+                existing.Quantity++;
+            }
+            else
+            {
+                cart.Add(new CartItem
+                {
+                    RestaurantId = id,
+                    RestaurantName = restaurant.Name,
+                    ItemName = itemName,
+                    UnitPrice = unitPrice,
+                    Quantity = 1
+                });
+            }
+
+            CartSessionHelper.SaveCart(HttpContext.Session, cart);
+            TempData["SuccessMessage"] = $"{itemName} added to cart.";
+            return RedirectToPage(new { id });
+        }
+
+        public class MenuItemOption
+        {
+            public string Name { get; set; } = string.Empty;
+            public decimal Price { get; set; }
+        }
+
+        private static List<MenuItemOption> BuildMenuItems(Restaurant restaurant)
+        {
+            var category = restaurant.Category?.ToLowerInvariant() ?? string.Empty;
+            return category switch
+            {
+                "pizza" => new List<MenuItemOption>
+                {
+                    new() { Name = "Margherita Pizza", Price = 13.99m },
+                    new() { Name = "Pepperoni Pizza", Price = 15.49m },
+                    new() { Name = "Garlic Knots", Price = 5.99m }
+                },
+                "sushi" => new List<MenuItemOption>
+                {
+                    new() { Name = "California Roll", Price = 11.99m },
+                    new() { Name = "Salmon Nigiri (6pc)", Price = 14.99m },
+                    new() { Name = "Miso Soup", Price = 4.49m }
+                },
+                "mexican" => new List<MenuItemOption>
+                {
+                    new() { Name = "Chicken Tacos", Price = 10.99m },
+                    new() { Name = "Burrito Bowl", Price = 12.49m },
+                    new() { Name = "Chips & Guac", Price = 6.99m }
+                },
+                "healthy" => new List<MenuItemOption>
+                {
+                    new() { Name = "Quinoa Bowl", Price = 11.49m },
+                    new() { Name = "Avocado Salad", Price = 9.99m },
+                    new() { Name = "Protein Smoothie", Price = 7.99m }
+                },
+                _ => new List<MenuItemOption>
+                {
+                    new() { Name = "Classic Burger", Price = 12.99m },
+                    new() { Name = "Crispy Fries", Price = 4.99m },
+                    new() { Name = "Soft Drink", Price = 2.99m }
+                }
+            };
         }
 
         // Simulated coordinates based on address keywords
