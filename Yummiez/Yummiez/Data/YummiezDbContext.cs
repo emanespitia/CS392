@@ -14,6 +14,8 @@ namespace Yummiez.Data
         public DbSet<Driver> Drivers { get; set; } = null!;
         public DbSet<Order> Orders { get; set; } = null!;
 
+        public DbSet<DriverApplication> DriverApplications { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

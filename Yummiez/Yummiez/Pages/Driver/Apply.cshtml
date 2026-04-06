@@ -1,0 +1,29 @@
+﻿@page
+@model Yummiez.Pages.Driver.ApplyModel
+
+<h2>Apply to Become a Driver</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label>Full Name</label>
+        <input asp-for="Application.FullName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>License Number</label>
+        <input asp-for="Application.LicenseNumber" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Vehicle Type</label>
+        <input asp-for="Application.VehicleType" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Vehicle Info</label>
+        <input asp-for="Application.VehicleInfo" class="form-control" />
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-success">Submit Application</button>
+</form>
