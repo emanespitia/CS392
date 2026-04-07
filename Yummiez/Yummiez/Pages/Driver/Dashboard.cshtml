@@ -1,0 +1,56 @@
+﻿@page
+@model DashboardModel
+
+<div class="container mt-5">
+    <h2 class="mb-4">🚗 Driver Dashboard</h2>
+
+    @if (Model.Driver != null)
+    {
+        <div class="card shadow-sm p-4">
+            <div class="row">
+
+                <!-- Driver Info -->
+                <div class="col-md-6">
+                    <h5 class="mb-3">Driver Info</h5>
+
+                    <p><strong>Vehicle:</strong> @Model.Driver.VehicleType</p>
+                    <p><strong>License:</strong> @Model.Driver.LicenseNumber</p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        @if (Model.Driver.IsAvailable)
+                        {
+                            <span class="badge bg-success">Available</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Offline</span>
+                        }
+                    </p>
+                </div>
+
+                <!-- Actions -->
+                <div class="col-md-6 d-flex align-items-center justify-content-center">
+                    <form method="post" asp-page-handler="ToggleAvailability">
+                        <button class="btn btn-lg @(Model.Driver.IsAvailable ? "btn-danger" : "btn-success")">
+                            @(Model.Driver.IsAvailable ? "Go Offline" : "Go Available")
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Future Section -->
+        <div class="card shadow-sm p-4 mt-4">
+            <h5>📦 Upcoming Deliveries</h5>
+            <p class="text-muted">No deliveries assigned yet.</p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            No driver profile found.
+        </div>
+    }
+</div>
