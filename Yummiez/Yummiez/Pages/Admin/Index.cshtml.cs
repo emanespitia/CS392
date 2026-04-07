@@ -144,11 +144,62 @@ namespace Yummiez.Pages.Admin
 
                     IF COL_LENGTH('dbo.Drivers', 'user_id') IS NOT NULL
                     BEGIN
-                        EXEC(N'DELETE FROM dbo.Drivers WHERE user_id = @p_uid', N'@p_uid NVARCHAR(450)', @p_uid = @uid);
+                        EXEC sp_executesql
+                            N'DELETE FROM dbo.Drivers WHERE user_id = @p_uid',
+                            N'@p_uid NVARCHAR(450)',
+                            @p_uid = @uid;
                     END;
                     IF COL_LENGTH('dbo.Drivers', 'identity_user_id') IS NOT NULL
                     BEGIN
-                        EXEC(N'DELETE FROM dbo.Drivers WHERE identity_user_id = @p_uid', N'@p_uid NVARCHAR(450)', @p_uid = @uid);
+                        EXEC sp_executesql
+                            N'DELETE FROM dbo.Drivers WHERE identity_user_id = @p_uid',
+                            N'@p_uid NVARCHAR(450)',
+                            @p_uid = @uid;
+                    END;
+
+                    IF COL_LENGTH('dbo.Clients', 'user_id') IS NOT NULL
+                    BEGIN
+                        EXEC sp_executesql
+                            N'DELETE FROM dbo.Clients WHERE user_id = @p_uid',
+                            N'@p_uid NVARCHAR(450)',
+                            @p_uid = @uid;
+                    END;
+                    IF COL_LENGTH('dbo.Clients', 'identity_user_id') IS NOT NULL
+                    BEGIN
+                        EXEC sp_executesql
+                            N'DELETE FROM dbo.Clients WHERE identity_user_id = @p_uid',
+                            N'@p_uid NVARCHAR(450)',
+                            @p_uid = @uid;
+                    END;
+
+                    IF OBJECT_ID('dbo.Customer', 'U') IS NOT NULL AND COL_LENGTH('dbo.Customer', 'user_id') IS NOT NULL
+                    BEGIN
+                        EXEC sp_executesql
+                            N'DELETE FROM dbo.Customer WHERE user_id = @p_uid',
+                            N'@p_uid NVARCHAR(450)',
+                            @p_uid = @uid;
+                    END;
+                    IF OBJECT_ID('dbo.Customer', 'U') IS NOT NULL AND COL_LENGTH('dbo.Customer', 'identity_user_id') IS NOT NULL
+                    BEGIN
+                        EXEC sp_executesql
+                            N'DELETE FROM dbo.Customer WHERE identity_user_id = @p_uid',
+                            N'@p_uid NVARCHAR(450)',
+                            @p_uid = @uid;
+                    END;
+
+                    IF OBJECT_ID('dbo.Customers', 'U') IS NOT NULL AND COL_LENGTH('dbo.Customers', 'user_id') IS NOT NULL
+                    BEGIN
+                        EXEC sp_executesql
+                            N'DELETE FROM dbo.Customers WHERE user_id = @p_uid',
+                            N'@p_uid NVARCHAR(450)',
+                            @p_uid = @uid;
+                    END;
+                    IF OBJECT_ID('dbo.Customers', 'U') IS NOT NULL AND COL_LENGTH('dbo.Customers', 'identity_user_id') IS NOT NULL
+                    BEGIN
+                        EXEC sp_executesql
+                            N'DELETE FROM dbo.Customers WHERE identity_user_id = @p_uid',
+                            N'@p_uid NVARCHAR(450)',
+                            @p_uid = @uid;
                     END;
                 ");
 
