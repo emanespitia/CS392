@@ -25,6 +25,8 @@ namespace Yummiez.Pages.Admin
 
         public List<UserWithRole> Users { get; set; } = new();
 
+
+        public List<Yummiez.Models.Driver> Drivers { get; set; } = new();
         // Driver Applications
         public List<DriverApplication> Applications { get; set; } = new();
 
@@ -33,6 +35,8 @@ namespace Yummiez.Pages.Admin
         public int OpenRestaurants { get; set; }
         public int ClosedRestaurants { get; set; }
         public int TotalUsers { get; set; }
+
+        
 
         public class UserWithRole
         {
@@ -55,6 +59,7 @@ namespace Yummiez.Pages.Admin
             TotalRestaurants = await _context.Restaurants.CountAsync();
             OpenRestaurants = await _context.Restaurants.CountAsync(r => r.IsOpen == true);
             ClosedRestaurants = TotalRestaurants - OpenRestaurants;
+            Drivers = await _context.Drivers.ToListAsync();
 
             var allUsers = await _userManager.Users.ToListAsync();
             TotalUsers = allUsers.Count;
