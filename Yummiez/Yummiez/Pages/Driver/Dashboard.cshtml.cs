@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Yummiez.Data;
 using Yummiez.Models;
@@ -18,6 +19,7 @@ public class DashboardModel : PageModel
 
     public Driver Driver { get; set; }
 
+    
     public async Task OnGetAsync()
     {
         var user = await _userManager.GetUserAsync(User);
@@ -29,5 +31,21 @@ public class DashboardModel : PageModel
 
         Driver = _db.Drivers
             .FirstOrDefault(d => d.IdentityUserId == user.Id);
+    }
+
+    public async Task<IActionResult> OnPostToggleAvailabilityAsync()
+    {
+        var user = await _userManager.GetUserAsync(User);
+
+        var driver = _db.Drivers
+            .FirstOrDefault(d => d.IdentityUserId == user.Id);
+
+        if (driver != null)
+        {
+            driver.IsAvailable = !driver.IsAvailable;
+            await _db.SaveChangesAsync();
+        }
+
+        return RedirectToPage();
     }
 }
