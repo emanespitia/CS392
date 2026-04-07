@@ -107,6 +107,7 @@
                                         </span>
                                     }
                                 </td>
+                                
                                 <td class="text-end">
                                     <form method="post" asp-page-handler="UpdateRole" class="d-inline-flex gap-2 align-items-center">
                                         <input type="hidden" name="userId" value="@user.Id" />
@@ -150,6 +151,67 @@
         }
     </div>
 </div>
+
+
+    <!-- Driver Applications -->
+    <div class="card detail-card mt-4">
+        <div class="detail-card-header">
+            <i class="fas fa-car fa-2x mb-2"></i>
+            <h2>Driver Applications</h2>
+            <p class="mb-0 opacity-75">Review submitted driver applications</p>
+        </div>
+
+        <div class="card-body p-4">
+            @if (Model.Applications.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>License</th>
+                                <th>Vehicle</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var app in Model.Applications)
+                            {
+                                <tr>
+                                    <td>@app.FullName</td>
+                                    <td>@app.LicenseNumber</td>
+                                    <td>@app.VehicleType</td>
+                                    <td>
+                                        <span class="badge @(app.Status == "Pending" ? "bg-warning text-dark" :
+                                            app.Status == "Approved" ? "bg-success" :
+                                            "bg-danger")">
+                                            @app.Status
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a asp-page="/Admin/ApplicationDetails"
+                                               asp-route-id="@app.Id"
+                                               class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye me-1"></i>View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4">
+                    <i class="fas fa-car-crash fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No driver applications found.</p>
+                </div>
+            }
+        </div>
+    </div>
+
 
 <div class="mt-3">
     <small class="text-muted">

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Yummiez.Data;
 using Yummiez.Models;
 
@@ -20,13 +21,52 @@ namespace Yummiez.Pages.Driver
         }
 
         [BindProperty]
-        public DriverApplication Application { get; set; }
+        public DriverApplication Application { get; set; } = new();
 
-        public void OnGet() { }
+        public string? CurrentStatus { get; set; }
+
+        public async Task OnGetAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return;
+            }
+
+            var app = await _context.DriverApplications
+                .FirstOrDefaultAsync(a => a.UserId == user.Id);
+
+            if (app != null)
+            {
+                CurrentStatus = app.Status;
+            }
+        }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Please fill out all required fields.";
+                return Page();
+            }
+
             var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToPage("/Identity/Account/Login");
+            }
+
+            // Prevent duplicate applications
+            var existing = await _context.DriverApplications
+                .FirstOrDefaultAsync(a => a.UserId == user.Id);
+
+            if (existing != null)
+            {
+                TempData["ErrorMessage"] = $"You already applied. Status: {existing.Status}";
+                return RedirectToPage("/Driver/Apply");
+            }
 
             Application.UserId = user.Id;
             Application.Status = "Pending";
@@ -34,7 +74,9 @@ namespace Yummiez.Pages.Driver
             _context.DriverApplications.Add(Application);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/Index");
+            TempData["SuccessMessage"] = "Application submitted! Status: Pending approval.";
+
+            return RedirectToPage("/Driver/Apply");
         }
     }
 }

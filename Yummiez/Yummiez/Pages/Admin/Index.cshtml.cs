@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Yummiez.Constants;
 using Yummiez.Data;
+using Yummiez.Models;
 
 namespace Yummiez.Pages.Admin
 {
@@ -23,6 +24,9 @@ namespace Yummiez.Pages.Admin
         }
 
         public List<UserWithRole> Users { get; set; } = new();
+
+        // Driver Applications
+        public List<DriverApplication> Applications { get; set; } = new();
 
         // Dashboard stats
         public int TotalRestaurants { get; set; }
@@ -47,7 +51,7 @@ namespace Yummiez.Pages.Admin
 
         public async Task OnGetAsync()
         {
-            // Load stats
+            // Stats
             TotalRestaurants = await _context.Restaurants.CountAsync();
             OpenRestaurants = await _context.Restaurants.CountAsync(r => r.IsOpen == true);
             ClosedRestaurants = TotalRestaurants - OpenRestaurants;
@@ -65,6 +69,11 @@ namespace Yummiez.Pages.Admin
                     Role = roles.FirstOrDefault() ?? "User"
                 });
             }
+
+            // Load driver applications
+            Applications = await _context.DriverApplications
+                .OrderByDescending(a => a.CreatedAt)
+                .ToListAsync();
         }
 
         public async Task<IActionResult> OnPostUpdateRoleAsync(string userId, string role)
@@ -99,10 +108,12 @@ namespace Yummiez.Pages.Admin
                         await _userManager.RemoveFromRoleAsync(user, assignableRole);
                     }
                 }
-                TempData["SuccessMessage"] = $"User '{user.Email}' has been promoted to Admin!";
 
                 await _userManager.AddToRoleAsync(user, role);
+
+                TempData["SuccessMessage"] = $"User '{user.Email}' role updated to {role}.";
             }
+
             return RedirectToPage();
         }
 
@@ -125,21 +136,12 @@ namespace Yummiez.Pages.Admin
                     {
                         return RedirectToPage();
                     }
-                    TempData["SuccessMessage"] = $"User '{user.Email}' has been demoted to User.";
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Cannot demote the last admin. At least one admin must always exist.";
                 }
 
-                // Domain tables can keep foreign-key references to the Identity user.
-                // Remove those dependent rows first so the Identity delete won't fail.
-                // Some deployments may use either `user_id` or `identity_user_id`, so we handle both safely.
                 var uid = user.Id;
                 await _context.Database.ExecuteSqlInterpolatedAsync($@"
                     DECLARE @uid NVARCHAR(450) = {uid};
 
-                    -- Drivers
                     IF COL_LENGTH('dbo.Drivers', 'user_id') IS NOT NULL
                     BEGIN
                         EXEC(N'DELETE FROM dbo.Drivers WHERE user_id = @p_uid', N'@p_uid NVARCHAR(450)', @p_uid = @uid);
@@ -148,20 +150,71 @@ namespace Yummiez.Pages.Admin
                     BEGIN
                         EXEC(N'DELETE FROM dbo.Drivers WHERE identity_user_id = @p_uid', N'@p_uid NVARCHAR(450)', @p_uid = @uid);
                     END;
-
-                    -- Clients
-                    IF COL_LENGTH('dbo.Clients', 'user_id') IS NOT NULL
-                    BEGIN
-                        EXEC(N'DELETE FROM dbo.Clients WHERE user_id = @p_uid', N'@p_uid NVARCHAR(450)', @p_uid = @uid);
-                    END;
-                    IF COL_LENGTH('dbo.Clients', 'identity_user_id') IS NOT NULL
-                    BEGIN
-                        EXEC(N'DELETE FROM dbo.Clients WHERE identity_user_id = @p_uid', N'@p_uid NVARCHAR(450)', @p_uid = @uid);
-                    END;
                 ");
 
                 await _userManager.DeleteAsync(user);
+
+                TempData["SuccessMessage"] = $"User '{user.Email}' deleted.";
             }
+
+            return RedirectToPage();
+        }
+
+        // APPROVE DRIVER
+        public async Task<IActionResult> OnPostApproveAsync(int id)
+        {
+            var app = await _context.DriverApplications.FindAsync(id);
+
+            if (app != null && app.Status == "Pending")
+            {
+                app.Status = "Approved";
+
+                var user = await _userManager.FindByIdAsync(app.UserId);
+
+                if (user == null)
+                    return RedirectToPage();
+
+                if (!await _userManager.IsInRoleAsync(user, Roles.Driver.ToString()))
+                {
+                    await _userManager.AddToRoleAsync(user, Roles.Driver.ToString());
+                }
+
+                var exists = await _context.Drivers
+                    .AnyAsync(d => d.IdentityUserId == app.UserId);
+
+                if (!exists)
+                {
+                    _context.Drivers.Add(new Yummiez.Models.Driver
+                    {
+                        IdentityUserId = app.UserId,
+                        LicenseNumber = app.LicenseNumber,
+                        VehicleType = app.VehicleType,
+                        IsAvailable = true,
+                        CreatedAt = DateTime.UtcNow
+                    });
+                }
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Application approved for {app.FullName}";
+            }
+
+            return RedirectToPage();
+        }
+
+        // REJECT DRIVER
+        public async Task<IActionResult> OnPostRejectAsync(int id)
+        {
+            var app = await _context.DriverApplications.FindAsync(id);
+
+            if (app != null)
+            {
+                app.Status = "Rejected";
+                await _context.SaveChangesAsync();
+
+                TempData["ErrorMessage"] = $"Application rejected for {app.FullName}";
+            }
+
             return RedirectToPage();
         }
     }

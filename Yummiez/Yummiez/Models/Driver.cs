@@ -27,6 +27,9 @@ namespace Yummiez.Models
         [Column("is_available")]
         public bool IsAvailable { get; set; }
 
+        [Column("user_id")]
+        public string UserId { get; set; } = null!;
+
         [Column("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

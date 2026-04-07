@@ -1,0 +1,27 @@
+﻿@page "{id:int}"
+@model Yummiez.Pages.Admin.ApplicationDetailsModel
+
+<h2>Driver Application Details</h2>
+
+<div class="card p-4">
+    <p><strong>Name:</strong> @Model.Application.FullName</p>
+    <p><strong>License:</strong> @Model.Application.LicenseNumber</p>
+    <p><strong>Vehicle Type:</strong> @Model.Application.VehicleType</p>
+    <p><strong>Vehicle Info:</strong> @Model.Application.VehicleInfo</p>
+    <p><strong>Status:</strong> @Model.Application.Status</p>
+</div>
+
+<br />
+
+@if (Model.Application.Status == "Pending")
+{
+    <form method="post" asp-page-handler="Approve">
+        <input type="hidden" name="id" value="@Model.Application.Id" />
+        <button class="btn btn-success">Approve</button>
+    </form>
+
+    <form method="post" asp-page-handler="Reject" class="mt-2">
+        <input type="hidden" name="id" value="@Model.Application.Id" />
+        <button class="btn btn-danger">Reject</button>
+    </form>
+}

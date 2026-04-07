@@ -15,39 +15,53 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" />
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Yummiez.styles.css" asp-append-version="true" />
 </head>
+
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">
+
+                <!-- Logo -->
+                <a class="navbar-brand" asp-page="/Index">
                     <i class="fas fa-hamburger me-2"></i>Yummiez
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+                    <!-- LEFT NAV -->
                     <ul class="navbar-nav flex-grow-1">
+
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link" asp-page="/Index">Home</a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Restaurants/Index">
+                            <a class="nav-link" asp-page="/Restaurants/Index">
                                 <i class="fas fa-utensils me-1"></i>Restaurants
                             </a>
                         </li>
+
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/About">
+                            <a class="nav-link" asp-page="/About">
                                 <i class="fas fa-info-circle me-1"></i>About
                             </a>
                         </li>
-                        @if (SignInManager.IsSignedIn(User) && !User.IsInRole("Admin") && !User.IsInRole("Driver"))
+
+                        <!-- ✅ FIXED DRIVER BUTTON -->
+                        @if (SignInManager.IsSignedIn(User)
+                                                    && !User.IsInRole("Admin")
+                                                    && !User.IsInRole("Driver"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Driver/Apply">
@@ -55,32 +69,39 @@
                                 </a>
                             </li>
                         }
+
                         @if (SignInManager.IsSignedIn(User))
                         {
                             @if (!User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-page="/Cart/Index">
+                                    <a class="nav-link" asp-page="/Cart/Index">
                                         <i class="fas fa-shopping-cart me-1"></i>Cart
                                     </a>
                                 </li>
                             }
+
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-page="/Orders/Index">
+                                <a class="nav-link" asp-page="/Orders/Index">
                                     <i class="fas fa-receipt me-1"></i>My Orders
                                 </a>
                             </li>
                         }
+
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-page="/Admin/Index">
+                                <a class="nav-link" asp-page="/Admin/Index">
                                     <i class="fas fa-shield-alt me-1"></i>Admin
                                 </a>
                             </li>
                         }
+
                     </ul>
+
+                    <!-- RIGHT NAV -->
                     <ul class="navbar-nav align-items-center">
+
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
@@ -88,9 +109,14 @@
                                     <i class="fas fa-user me-1"></i>@User.Identity?.Name
                                 </span>
                             </li>
+
                             <li class="nav-item">
-                                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post">
-                                    <button type="submit" class="btn btn-outline-primary rounded-pill px-4 ms-2">
+                                <form asp-area="Identity"
+                                      asp-page="/Account/Logout"
+                                      asp-route-returnUrl="/"
+                                      method="post">
+                                    <button type="submit"
+                                            class="btn btn-outline-primary rounded-pill px-4 ms-2">
                                         <i class="fas fa-sign-out-alt me-1"></i>Log Out
                                     </button>
                                 </form>
@@ -99,72 +125,99 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="btn btn-primary rounded-pill px-4 ms-2" asp-area="Identity" asp-page="/Account/Register">Sign Up</a>
+                                <a class="btn btn-primary rounded-pill px-4 ms-2"
+                                       asp-area="Identity"
+                                       asp-page="/Account/Register">
+                                    Sign Up
+                                </a>
                             </li>
+
                             <li class="nav-item">
-                                <a class="btn btn-outline-primary rounded-pill px-4 ms-2" asp-area="Identity" asp-page="/Account/Login">Log In</a>
+                                <a class="btn btn-outline-primary rounded-pill px-4 ms-2"
+                                       asp-area="Identity"
+                                       asp-page="/Account/Login">
+                                    Log In
+                                </a>
                             </li>
                         }
+
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
+    <!-- MAIN CONTENT -->
     <div class="container">
         <main role="main" class="pb-3">
-            <!-- Toast Container -->
+
+            <!-- SUCCESS -->
             @if (TempData["SuccessMessage"] != null)
             {
-                <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+                <div class="alert alert-success alert-dismissible fade show d-flex align-items-center">
                     <i class="fas fa-check-circle me-2"></i>
                     <div>@TempData["SuccessMessage"]</div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             }
+
+            <!-- ERROR -->
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+                <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center">
                     <i class="fas fa-exclamation-circle me-2"></i>
                     <div>@TempData["ErrorMessage"]</div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             }
+
             @RenderBody()
         </main>
     </div>
 
+    <!-- FOOTER -->
     <footer class="footer-section">
         <div class="container">
             <div class="row py-4">
-                <div class="col-md-4 mb-3 mb-md-0">
-                    <h5 class="fw-bold text-success"><i class="fas fa-hamburger me-2"></i>Yummiez</h5>
-                    <p class="text-muted small mb-0">Delicious food, delivered fast.<br/>A CS392 Web Application Project.</p>
+
+                <div class="col-md-4">
+                    <h5 class="fw-bold text-success">
+                        <i class="fas fa-hamburger me-2"></i>Yummiez
+                    </h5>
+                    <p class="text-muted small">
+                        Delicious food, delivered fast.<br />
+                        A CS392 Web Application Project.
+                    </p>
                 </div>
-                <div class="col-md-4 mb-3 mb-md-0">
+
+                <div class="col-md-4">
                     <h6 class="fw-bold">Quick Links</h6>
                     <ul class="list-unstyled small">
-                        <li><a asp-page="/Index" class="text-muted text-decoration-none"><i class="fas fa-home me-1"></i>Home</a></li>
-                        <li><a asp-page="/Restaurants/Index" class="text-muted text-decoration-none"><i class="fas fa-utensils me-1"></i>Restaurants</a></li>
-                        <li><a asp-page="/About" class="text-muted text-decoration-none"><i class="fas fa-info-circle me-1"></i>About</a></li>
-                        <li><a asp-page="/Privacy" class="text-muted text-decoration-none"><i class="fas fa-shield-alt me-1"></i>Privacy</a></li>
+                        <li><a asp-page="/Index">Home</a></li>
+                        <li><a asp-page="/Restaurants/Index">Restaurants</a></li>
+                        <li><a asp-page="/About">About</a></li>
+                        <li><a asp-page="/Privacy">Privacy</a></li>
                     </ul>
                 </div>
+
                 <div class="col-md-4">
                     <h6 class="fw-bold">Built With</h6>
-                    <p class="text-muted small mb-1"><i class="fas fa-server me-1"></i>ASP.NET Core 9.0</p>
-                    <p class="text-muted small mb-1"><i class="fas fa-database me-1"></i>Azure SQL Server</p>
-                    <p class="text-muted small mb-0"><i class="fas fa-palette me-1"></i>Bootstrap 5</p>
+                    <p class="small">ASP.NET Core 9.0</p>
+                    <p class="small">Azure SQL Server</p>
+                    <p class="small">Bootstrap 5</p>
                 </div>
+
             </div>
-            <div class="border-top pt-3 pb-2 text-center">
-                <small class="text-muted">&copy; 2026 Yummiez &mdash; CS392 Web Application Development</small>
+
+            <div class="border-top pt-3 text-center">
+                <small>&copy; 2026 Yummiez</small>
             </div>
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
