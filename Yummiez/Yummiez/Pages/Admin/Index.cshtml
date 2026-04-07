@@ -219,3 +219,63 @@
         You cannot remove the last admin account. At least one admin must always exist.
     </small>
 </div>
+
+<!-- Drivers Status -->
+<div class="card detail-card mt-4">
+    <div class="detail-card-header">
+        <i class="fas fa-car-side fa-2x mb-2"></i>
+        <h2>Drivers</h2>
+        <p class="mb-0 opacity-75">Monitor driver availability</p>
+    </div>
+
+    <div class="card-body p-4">
+        @if (Model.Drivers.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Email</th>
+                            <th>Vehicle</th>
+                            <th>License</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var driver in Model.Drivers)
+                        {
+                            var user = Model.Users.FirstOrDefault(u => u.Id == driver.IdentityUserId);
+
+                            <tr>
+                                <td>@(user?.Email ?? "Unknown")</td>
+                                <td>@driver.VehicleType</td>
+                                <td>@driver.LicenseNumber</td>
+                                <td>
+                                    @if (driver.IsAvailable)
+                                    {
+                                        <span class="badge bg-success rounded-pill px-3 py-2">
+                                            <i class="fas fa-circle me-1"></i>Online
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                            <i class="fas fa-circle me-1"></i>Offline
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-4">
+                <i class="fas fa-car-side fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No drivers found.</p>
+            </div>
+        }
+    </div>
+</div>
