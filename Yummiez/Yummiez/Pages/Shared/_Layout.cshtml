@@ -47,6 +47,11 @@
                                 <i class="fas fa-info-circle me-1"></i>About
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/FAQ/Index">
+                                <i class="fas fa-question-circle me-1"></i>FAQ
+                            </a>
+                        </li>
                         @if (SignInManager.IsSignedIn(User) && !User.IsInRole("Admin") && !User.IsInRole("Driver"))
                         {
                             <li class="nav-item">
@@ -146,6 +151,7 @@
                         <li><a asp-page="/Index" class="text-muted text-decoration-none"><i class="fas fa-home me-1"></i>Home</a></li>
                         <li><a asp-page="/Restaurants/Index" class="text-muted text-decoration-none"><i class="fas fa-utensils me-1"></i>Restaurants</a></li>
                         <li><a asp-page="/About" class="text-muted text-decoration-none"><i class="fas fa-info-circle me-1"></i>About</a></li>
+                        <li><a asp-page="/FAQ/Index" class="text-muted text-decoration-none"><i class="fas fa-question-circle me-1"></i>FAQ</a></li>
                         <li><a asp-page="/Privacy" class="text-muted text-decoration-none"><i class="fas fa-shield-alt me-1"></i>Privacy</a></li>
                     </ul>
                 </div>

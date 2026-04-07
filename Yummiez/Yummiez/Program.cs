@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Yummiez.Data;
+using Yummiez.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
+
+// MongoDB FAQ Service
+builder.Services.Configure<MongoDbSettings>(
+    builder.Configuration.GetSection("MongoDB"));
+builder.Services.AddSingleton<FaqService>();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(60);
@@ -88,6 +94,18 @@ using (var scope = app.Services.CreateScope())
 
     await DbSeeder.SeedRolesAndAdminAsync(scope.ServiceProvider);
     await DbSeeder.SeedRestaurantsAsync(yummiezDb);
+
+    // Seed MongoDB FAQ data (non-blocking — app starts even if MongoDB is down)
+    try
+    {
+        var faqService = scope.ServiceProvider.GetRequiredService<FaqService>();
+        await faqService.SeedDefaultFaqsAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogWarning(ex, "MongoDB FAQ seeding failed — FAQ page will be empty until MongoDB is available.");
+    }
 }
 
 app.Run();
