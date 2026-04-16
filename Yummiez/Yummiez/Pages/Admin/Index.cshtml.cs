@@ -24,9 +24,9 @@ namespace Yummiez.Pages.Admin
         }
 
         public List<UserWithRole> Users { get; set; } = new();
-
-
         public List<Yummiez.Models.Driver> Drivers { get; set; } = new();
+        public List<Restaurant> Restaurants { get; set; } = new();
+        public List<IdentityUser> ManagerUsers { get; set; } = new();
         // Driver Applications
         public List<DriverApplication> Applications { get; set; } = new();
 
@@ -79,6 +79,12 @@ namespace Yummiez.Pages.Admin
             Applications = await _context.DriverApplications
                 .OrderByDescending(a => a.CreatedAt)
                 .ToListAsync();
+
+            Drivers = await _context.Drivers.ToListAsync();
+            Restaurants = await _context.Restaurants.OrderBy(r => r.Name).ToListAsync();
+
+            var managerIds = await _userManager.GetUsersInRoleAsync(Roles.Manager.ToString());
+            ManagerUsers = managerIds.OrderBy(u => u.Email).ToList();
         }
 
         public async Task<IActionResult> OnPostUpdateRoleAsync(string userId, string role)
@@ -212,6 +218,36 @@ namespace Yummiez.Pages.Admin
 
                 TempData["SuccessMessage"] = $"User '{user.Email}' deleted.";
             }
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostAssignManagerAsync(int restaurantId, string? managerUserId)
+        {
+            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(r => r.RestaurantId == restaurantId);
+            if (restaurant == null)
+            {
+                TempData["ErrorMessage"] = "Restaurant not found.";
+                return RedirectToPage();
+            }
+
+            if (!string.IsNullOrWhiteSpace(managerUserId))
+            {
+                var manager = await _userManager.FindByIdAsync(managerUserId);
+                if (manager == null || !await _userManager.IsInRoleAsync(manager, Roles.Manager.ToString()))
+                {
+                    TempData["ErrorMessage"] = "Selected user is not a valid manager.";
+                    return RedirectToPage();
+                }
+            }
+
+            restaurant.ManagerUserId = string.IsNullOrWhiteSpace(managerUserId) ? null : managerUserId;
+            restaurant.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = string.IsNullOrWhiteSpace(managerUserId)
+                ? $"Manager unassigned from {restaurant.Name}."
+                : $"Manager assigned for {restaurant.Name}.";
 
             return RedirectToPage();
         }

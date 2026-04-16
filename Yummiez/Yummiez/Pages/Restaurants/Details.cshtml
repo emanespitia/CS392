@@ -65,7 +65,7 @@
                 </div>
             </div>
             <div class="card-footer bg-transparent p-3">
-                @if (User.Identity?.IsAuthenticated == true && !User.IsInRole("Admin") && Model.Restaurant.IsOpen == true)
+                @if (User.Identity?.IsAuthenticated == true && User.IsInRole("User") && Model.Restaurant.IsOpen == true)
                 {
                     <div class="card border-success mb-3">
                         <div class="card-body">
@@ -94,10 +94,10 @@
                         </div>
                     </div>
                 }
-                else if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                else if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Driver")))
                 {
                     <div class="alert alert-info mb-3">
-                        <i class="fas fa-shield-alt me-2"></i>Admins can manage restaurants but cannot place orders.
+                        <i class="fas fa-shield-alt me-2"></i>This account is for platform operations and cannot place orders.
                     </div>
                 }
                 else if (Model.Restaurant.IsOpen != true)

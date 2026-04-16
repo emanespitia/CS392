@@ -23,7 +23,7 @@ builder.Services.AddDbContext<YummiezDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("ApplicationDbContext")
         ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.")
-    )
+    ).ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning))
 );
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>

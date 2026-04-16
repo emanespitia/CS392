@@ -41,10 +41,82 @@
             </div>
         </div>
 
-        <!-- Future Section -->
         <div class="card shadow-sm p-4 mt-4">
-            <h5>📦 Upcoming Deliveries</h5>
-            <p class="text-muted">No deliveries assigned yet.</p>
+            <h5>📦 Ready for Pickup</h5>
+            @if (Model.AvailableOrders.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Restaurant</th>
+                                <th>Address</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.AvailableOrders)
+                            {
+                                <tr>
+                                    <td>#@order.OrderId</td>
+                                    <td>@(order.Restaurant?.Name ?? "Restaurant")</td>
+                                    <td>@order.DeliveryAddress</td>
+                                    <td class="text-end">
+                                        <form method="post" asp-page-handler="AcceptPickup" class="d-inline">
+                                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                                            <button class="btn btn-sm btn-primary">Accept Pickup</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No ready orders right now.</p>
+            }
+        </div>
+
+        <div class="card shadow-sm p-4 mt-4">
+            <h5>🚚 My Active Deliveries</h5>
+            @if (Model.MyActiveOrders.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Restaurant</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.MyActiveOrders)
+                            {
+                                <tr>
+                                    <td>#@order.OrderId</td>
+                                    <td>@(order.Restaurant?.Name ?? "Restaurant")</td>
+                                    <td>@order.Status</td>
+                                    <td class="text-end">
+                                        <form method="post" asp-page-handler="MarkDelivered" class="d-inline">
+                                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                                            <button class="btn btn-sm btn-success">Mark Delivered</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No active deliveries.</p>
+            }
         </div>
     }
     else

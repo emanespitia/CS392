@@ -47,9 +47,9 @@ namespace Yummiez.Pages.Restaurants
 
         public async Task<IActionResult> OnPostOrderAsync(int id)
         {
-            if (User.IsInRole("Admin"))
+            if (!User.IsInRole("User"))
             {
-                TempData["ErrorMessage"] = "Admins cannot place orders.";
+                TempData["ErrorMessage"] = "Only user accounts can place orders.";
                 return RedirectToPage(new { id });
             }
 
@@ -99,9 +99,9 @@ namespace Yummiez.Pages.Restaurants
 
         public async Task<IActionResult> OnPostAddToCartAsync(int id, string itemName, decimal unitPrice)
         {
-            if (User.IsInRole("Admin"))
+            if (!User.IsInRole("User"))
             {
-                TempData["ErrorMessage"] = "Admins cannot add items to cart.";
+                TempData["ErrorMessage"] = "Only user accounts can add items to cart.";
                 return RedirectToPage(new { id });
             }
 

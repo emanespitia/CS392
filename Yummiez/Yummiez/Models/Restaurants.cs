@@ -36,6 +36,10 @@ namespace Yummiez.Models
         [Column("admin_id")]
         public int AdminId { get; set; }
 
+        [Column("manager_user_id")]
+        [MaxLength(450)]
+        public string? ManagerUserId { get; set; }
+
         [Column("category")]
         [MaxLength(50)]
         public string? Category { get; set; }

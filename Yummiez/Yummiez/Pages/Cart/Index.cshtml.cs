@@ -10,7 +10,7 @@ using Yummiez.Models;
 
 namespace Yummiez.Pages.Cart
 {
-    [Authorize]
+    [Authorize(Roles = "User")]
     public class IndexModel : PageModel
     {
         private readonly YummiezDbContext _context;
@@ -54,12 +54,6 @@ namespace Yummiez.Pages.Cart
 
         public async Task<IActionResult> OnPostCheckoutAsync()
         {
-            if (User.IsInRole("Admin"))
-            {
-                TempData["ErrorMessage"] = "Admins cannot place orders.";
-                return RedirectToPage("/Admin/Index");
-            }
-
             var items = CartSessionHelper.GetCart(HttpContext.Session);
             if (!items.Any())
             {

@@ -8,7 +8,7 @@ using Yummiez.Models;
 
 namespace Yummiez.Pages.Orders
 {
-    [Authorize]
+    [Authorize(Roles = "User")]
     public class TrackModel : PageModel
     {
         private readonly YummiezDbContext _context;

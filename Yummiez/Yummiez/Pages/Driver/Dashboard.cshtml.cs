@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Yummiez.Data;
 using Yummiez.Models;
 
@@ -18,6 +19,8 @@ public class DashboardModel : PageModel
     }
 
     public Driver Driver { get; set; }
+    public List<Order> AvailableOrders { get; set; } = new();
+    public List<Order> MyActiveOrders { get; set; } = new();
 
     
     public async Task OnGetAsync()
@@ -31,6 +34,18 @@ public class DashboardModel : PageModel
 
         Driver = _db.Drivers
             .FirstOrDefault(d => d.IdentityUserId == user.Id);
+
+        AvailableOrders = await _db.Orders
+            .Include(o => o.Restaurant)
+            .Where(o => o.Status == OrderStatus.Ready)
+            .OrderBy(o => o.CreatedAt)
+            .ToListAsync();
+
+        MyActiveOrders = await _db.Orders
+            .Include(o => o.Restaurant)
+            .Where(o => o.DriverUserId == user.Id && o.Status != OrderStatus.Delivered)
+            .OrderByDescending(o => o.CreatedAt)
+            .ToListAsync();
     }
 
     public async Task<IActionResult> OnPostToggleAvailabilityAsync()
@@ -44,6 +59,58 @@ public class DashboardModel : PageModel
         {
             driver.IsAvailable = !driver.IsAvailable;
             await _db.SaveChangesAsync();
+        }
+
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostAcceptPickupAsync(int orderId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return Challenge();
+        }
+
+        var order = await _db.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+        if (order == null || order.Status != OrderStatus.Ready)
+        {
+            TempData["ErrorMessage"] = "This order is not available for pickup.";
+            return RedirectToPage();
+        }
+
+        order.DriverUserId = user.Id;
+        order.DriverName = user.Email ?? "Driver";
+        order.Status = OrderStatus.PickedUp;
+        order.StepCount = 1;
+        await _db.SaveChangesAsync();
+
+        TempData["SuccessMessage"] = $"Order #{order.OrderId} picked up.";
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostMarkDeliveredAsync(int orderId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return Challenge();
+        }
+
+        var order = await _db.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId && o.DriverUserId == user.Id);
+        if (order == null)
+        {
+            TempData["ErrorMessage"] = "Order not found for this driver.";
+            return RedirectToPage();
+        }
+
+        if (order.Status == OrderStatus.PickedUp || order.Status == OrderStatus.OnTheWay)
+        {
+            order.Status = OrderStatus.Delivered;
+            order.DeliveredAt = DateTime.UtcNow;
+            order.StepCount = 10;
+            await _db.SaveChangesAsync();
+            TempData["SuccessMessage"] = $"Order #{order.OrderId} marked delivered.";
         }
 
         return RedirectToPage();

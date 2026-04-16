@@ -4,6 +4,62 @@
     ViewData["Title"] = "Home page";
 }
 
+@if (User.Identity?.IsAuthenticated == true && User.IsInRole("Manager"))
+{
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <h2 class="fw-bold mb-2"><i class="fas fa-briefcase me-2"></i>Manager Home</h2>
+            @if (Model.ManagerRestaurant != null)
+            {
+                <p class="text-muted mb-0">
+                    Managing: <strong>@Model.ManagerRestaurant.Name</strong>
+                </p>
+            }
+            else
+            {
+                <p class="text-muted mb-0">You are not assigned to a restaurant yet.</p>
+            }
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h3 class="fw-bold mb-0">@Model.ManagerTotalOrders</h3>
+                    <small class="text-muted">Total Orders</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h3 class="fw-bold mb-0">@Model.ManagerPendingOrders</h3>
+                    <small class="text-muted">Pending Acceptance</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h3 class="fw-bold mb-0">@Model.ManagerReadyOrders</h3>
+                    <small class="text-muted">Ready for Driver</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a asp-page="/Manager/Index" class="btn btn-primary">
+            <i class="fas fa-clipboard-list me-1"></i>Open Manager Dashboard
+        </a>
+        <a asp-page="/Manager/Restaurant" class="btn btn-outline-primary">
+            <i class="fas fa-store me-1"></i>Edit My Restaurant
+        </a>
+    </div>
+}
+else
+{
 <!-- Hero Section -->
 <div class="hero-section">
     <div class="container text-center">
@@ -34,68 +90,72 @@
         <a href="/?category=Mexican" class="btn rounded-pill px-3 border shadow-sm @(Model.Category == "Mexican" ? "btn-primary text-white" : "btn-light")">🌮 Mexican</a>
     </div>
 </div>
+}
 
-<!-- Featured Restaurants Section -->
-<div class="container mb-5">
-    <h2 class="section-title">
-        @(string.IsNullOrEmpty(Model.Category) ? "Featured Restaurants" : Model.Category + " Restaurants")
-    </h2>
+@if (!(User.Identity?.IsAuthenticated == true && User.IsInRole("Manager")))
+{
+    <!-- Featured Restaurants Section -->
+    <div class="container mb-5">
+        <h2 class="section-title">
+            @(string.IsNullOrEmpty(Model.Category) ? "Featured Restaurants" : Model.Category + " Restaurants")
+        </h2>
 
-    @if (Model.Restaurants.Any())
-    {
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            @foreach (var r in Model.Restaurants)
-            {
-                <div class="col">
-                    <a asp-page="/Restaurants/Details" asp-route-id="@r.RestaurantId" class="text-decoration-none">
-                        <div class="card restaurant-card h-100">
-                            @if (!string.IsNullOrEmpty(r.ImageUrl))
-                            {
-                                <img src="@r.ImageUrl" class="card-img-top restaurant-card-img" alt="@r.Name">
-                            }
-                            else
-                            {
-                                <div class="card-img-top-placeholder">
-                                    <i class="fas fa-store"></i>
-                                </div>
-                            }
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <h5 class="restaurant-name">@r.Name</h5>
-                                    <span class="rating-badge">
-                                        @(r.IsOpen == true ? "Open" : "Closed")
-                                        <i class="fas fa-circle @(r.IsOpen == true ? "text-success" : "text-danger") ms-1" style="font-size: 0.5rem;"></i>
-                                    </span>
-                                </div>
-                                @if (!string.IsNullOrEmpty(r.Category))
+        @if (Model.Restaurants.Any())
+        {
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                @foreach (var r in Model.Restaurants)
+                {
+                    <div class="col">
+                        <a asp-page="/Restaurants/Details" asp-route-id="@r.RestaurantId" class="text-decoration-none">
+                            <div class="card restaurant-card h-100">
+                                @if (!string.IsNullOrEmpty(r.ImageUrl))
                                 {
-                                    <span class="badge bg-light text-dark border mb-2">@r.Category</span>
+                                    <img src="@r.ImageUrl" class="card-img-top restaurant-card-img" alt="@r.Name">
                                 }
-                                <p class="restaurant-meta">
-                                    <i class="fas fa-map-marker-alt me-1"></i>@r.Address
-                                </p>
-                                @if (!string.IsNullOrEmpty(r.Phone))
+                                else
                                 {
-                                    <div class="mt-2 text-muted small">
-                                        <i class="fas fa-phone me-1"></i> @r.Phone
+                                    <div class="card-img-top-placeholder">
+                                        <i class="fas fa-store"></i>
                                     </div>
                                 }
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h5 class="restaurant-name">@r.Name</h5>
+                                        <span class="rating-badge">
+                                            @(r.IsOpen == true ? "Open" : "Closed")
+                                            <i class="fas fa-circle @(r.IsOpen == true ? "text-success" : "text-danger") ms-1" style="font-size: 0.5rem;"></i>
+                                        </span>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(r.Category))
+                                    {
+                                        <span class="badge bg-light text-dark border mb-2">@r.Category</span>
+                                    }
+                                    <p class="restaurant-meta">
+                                        <i class="fas fa-map-marker-alt me-1"></i>@r.Address
+                                    </p>
+                                    @if (!string.IsNullOrEmpty(r.Phone))
+                                    {
+                                        <div class="mt-2 text-muted small">
+                                            <i class="fas fa-phone me-1"></i> @r.Phone
+                                        </div>
+                                    }
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="text-center py-5">
-            <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
-            <p class="text-muted fs-5">
-                @(string.IsNullOrEmpty(Model.Category) 
-                    ? "No restaurants available yet. Check back soon!" 
-                    : "No " + Model.Category + " restaurants found. Try another category!")
-            </p>
-        </div>
-    }
-</div>
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+                <p class="text-muted fs-5">
+                    @(string.IsNullOrEmpty(Model.Category)
+                        ? "No restaurants available yet. Check back soon!"
+                        : "No " + Model.Category + " restaurants found. Try another category!")
+                </p>
+            </div>
+        }
+    </div>
+}

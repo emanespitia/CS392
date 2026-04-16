@@ -31,23 +31,23 @@
                         </div>
                         <small class="d-block mt-1">Placed</small>
                     </div>
-                    <div class="status-step text-center" style="z-index:1;" data-step="Preparing">
-                        <div class="status-dot bg-secondary" id="dot-Preparing">
-                            <i class="fas fa-fire"></i>
+                    <div class="status-step text-center" style="z-index:1;" data-step="Accepted">
+                        <div class="status-dot bg-secondary" id="dot-Accepted">
+                            <i class="fas fa-check"></i>
                         </div>
-                        <small class="d-block mt-1">Preparing</small>
+                        <small class="d-block mt-1">Accepted</small>
+                    </div>
+                    <div class="status-step text-center" style="z-index:1;" data-step="Ready">
+                        <div class="status-dot bg-secondary" id="dot-Ready">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <small class="d-block mt-1">Ready</small>
                     </div>
                     <div class="status-step text-center" style="z-index:1;" data-step="PickedUp">
                         <div class="status-dot bg-secondary" id="dot-PickedUp">
                             <i class="fas fa-box"></i>
                         </div>
                         <small class="d-block mt-1">Picked Up</small>
-                    </div>
-                    <div class="status-step text-center" style="z-index:1;" data-step="OnTheWay">
-                        <div class="status-dot bg-secondary" id="dot-OnTheWay">
-                            <i class="fas fa-car"></i>
-                        </div>
-                        <small class="d-block mt-1">On the Way</small>
                     </div>
                     <div class="status-step text-center" style="z-index:1;" data-step="Delivered">
                         <div class="status-dot bg-secondary" id="dot-Delivered">
@@ -124,12 +124,12 @@
 
 <script>
     const orderId = @Model.Order.OrderId;
-    const steps = ["Placed", "Preparing", "PickedUp", "OnTheWay", "Delivered"];
+    const steps = ["Placed", "Accepted", "Ready", "PickedUp", "Delivered"];
     const statusMessages = {
         "Placed": "Your order has been placed!",
-        "Preparing": "The restaurant is preparing your food...",
+        "Accepted": "Manager accepted your order.",
+        "Ready": "Your order is ready for driver pickup.",
         "PickedUp": "Your driver just picked up the order!",
-        "OnTheWay": "Your driver is on the way!",
         "Delivered": "Your order has been delivered! 🎉"
     };
 
@@ -199,7 +199,7 @@
         });
 
         document.getElementById('statusText').textContent = statusMessages[status] || '';
-        document.getElementById('statusLabel').textContent = status === 'OnTheWay' ? 'On the Way' : status === 'PickedUp' ? 'Picked Up' : status;
+        document.getElementById('statusLabel').textContent = status === 'PickedUp' ? 'Picked Up' : status;
 
         if (status === 'Delivered') {
             document.getElementById('statusBadge').innerHTML = '<i class="fas fa-check me-1"></i>Delivered';

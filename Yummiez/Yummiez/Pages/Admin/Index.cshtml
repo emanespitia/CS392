@@ -220,6 +220,74 @@
     </small>
 </div>
 
+<div class="card detail-card mt-4">
+    <div class="detail-card-header">
+        <i class="fas fa-user-tie fa-2x mb-2"></i>
+        <h2>Restaurant Manager Assignments</h2>
+        <p class="mb-0 opacity-75">Assign each restaurant to a manager account</p>
+    </div>
+    <div class="card-body p-4">
+        @if (Model.Restaurants.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Restaurant</th>
+                            <th>Manager</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var restaurant in Model.Restaurants)
+                        {
+                            <tr>
+                                <td>@restaurant.Name</td>
+                                <td>
+                                    <form method="post" asp-page-handler="AssignManager" class="d-inline-flex gap-2 align-items-center">
+                                        <input type="hidden" name="restaurantId" value="@restaurant.RestaurantId" />
+                                        <select name="managerUserId" class="form-select form-select-sm" style="min-width: 220px;">
+                                            <option value="">-- Unassigned --</option>
+                                            @foreach (var manager in Model.ManagerUsers)
+                                            {
+                                                if (manager.Id == restaurant.ManagerUserId)
+                                                {
+                                                    <option value="@manager.Id" selected>@manager.Email</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@manager.Id">@manager.Email</option>
+                                                }
+                                            }
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-save me-1"></i>Save
+                                        </button>
+                                    </form>
+                                </td>
+                                <td class="text-end">
+                                    @if (string.IsNullOrWhiteSpace(restaurant.ManagerUserId))
+                                    {
+                                        <span class="badge bg-secondary">Unassigned</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Assigned</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted mb-0">No restaurants found.</p>
+        }
+    </div>
+</div>
+
 <!-- Drivers Status -->
 <div class="card detail-card mt-4">
     <div class="detail-card-header">

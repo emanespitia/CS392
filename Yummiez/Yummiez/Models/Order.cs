@@ -16,6 +16,10 @@ namespace Yummiez.Models
         [MaxLength(450)]
         public string UserId { get; set; } = null!;
 
+        [Column("driver_user_id")]
+        [MaxLength(450)]
+        public string? DriverUserId { get; set; }
+
         [Column("restaurant_id")]
         public int RestaurantId { get; set; }
 
@@ -69,7 +73,8 @@ namespace Yummiez.Models
     public static class OrderStatus
     {
         public const string Placed = "Placed";
-        public const string Preparing = "Preparing";
+        public const string Accepted = "Accepted";
+        public const string Ready = "Ready";
         public const string PickedUp = "PickedUp";
         public const string OnTheWay = "OnTheWay";
         public const string Delivered = "Delivered";

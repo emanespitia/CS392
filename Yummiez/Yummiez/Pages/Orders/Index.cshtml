@@ -36,12 +36,12 @@
                                     "Delivered" => "bg-success",
                                     "OnTheWay" => "bg-primary",
                                     "PickedUp" => "bg-info",
-                                    "Preparing" => "bg-warning text-dark",
+                                    "Accepted" => "bg-primary",
+                                    "Ready" => "bg-warning text-dark",
                                     _ => "bg-secondary"
                                 };
                                 var statusLabel = order.Status switch
                                 {
-                                    "OnTheWay" => "On the Way",
                                     "PickedUp" => "Picked Up",
                                     _ => order.Status
                                 };

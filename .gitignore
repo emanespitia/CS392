@@ -57,7 +57,7 @@ CopilotIndices/
 
 # Visual Studio directory
 .vs/
-
+.resolved/
 # Rider / IntelliJ
 .idea/
 

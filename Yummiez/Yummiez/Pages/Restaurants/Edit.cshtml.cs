@@ -39,6 +39,7 @@ namespace Yummiez.Pages.Restaurants
             {
                 return NotFound();
             }
+
             Restaurant = restaurant;
             return Page();
         }
@@ -52,8 +53,21 @@ namespace Yummiez.Pages.Restaurants
                 return Page();
             }
 
-            Restaurant.UpdatedAt = DateTime.UtcNow;
-            _context.Attach(Restaurant).State = EntityState.Modified;
+            var existingRestaurant = await _context.Restaurants
+                .FirstOrDefaultAsync(r => r.RestaurantId == Restaurant.RestaurantId);
+            if (existingRestaurant == null)
+            {
+                return NotFound();
+            }
+
+            existingRestaurant.Name = Restaurant.Name;
+            existingRestaurant.OwnerName = Restaurant.OwnerName;
+            existingRestaurant.Address = Restaurant.Address;
+            existingRestaurant.Phone = Restaurant.Phone;
+            existingRestaurant.IsOpen = Restaurant.IsOpen;
+            existingRestaurant.Category = Restaurant.Category;
+            existingRestaurant.ImageUrl = Restaurant.ImageUrl;
+            existingRestaurant.UpdatedAt = DateTime.UtcNow;
 
             try
             {

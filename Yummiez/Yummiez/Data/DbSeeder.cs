@@ -54,6 +54,10 @@ namespace Yummiez.Data
                         ALTER TABLE Restaurants ADD category NVARCHAR(50);
                     IF COL_LENGTH('Restaurants', 'image_url') IS NULL
                         ALTER TABLE Restaurants ADD image_url NVARCHAR(500);
+                    IF COL_LENGTH('Restaurants', 'manager_user_id') IS NULL
+                        ALTER TABLE Restaurants ADD manager_user_id NVARCHAR(450) NULL;
+                    IF COL_LENGTH('Orders', 'driver_user_id') IS NULL
+                        ALTER TABLE Orders ADD driver_user_id NVARCHAR(450) NULL;
                 ";
                 await context.Database.ExecuteSqlRawAsync(addColumnsSql);
 
