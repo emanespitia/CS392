@@ -91,8 +91,18 @@ namespace Yummiez.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                // Find user by EMAIL explicitly
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+
+                if (user == null)
+                {
+                    _logger.LogWarning("Login failed: user not found.");
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return Page();
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(
-                    Input.Email,
+                    user.UserName, // 👈 THIS is the key fix
                     Input.Password,
                     Input.RememberMe,
                     lockoutOnFailure: false);
@@ -101,8 +111,7 @@ namespace Yummiez.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
 
-                    // GET USER SAFELY
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                    // 🚫 DO NOT re-declare user — reuse the one above
 
                     // ROLE-BASED REDIRECTS
                     if (await _userManager.IsInRoleAsync(user, "Driver"))
@@ -118,7 +127,6 @@ namespace Yummiez.Areas.Identity.Pages.Account
                     // DEFAULT
                     return LocalRedirect(returnUrl ?? "/Index");
                 }
-
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new

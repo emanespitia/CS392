@@ -1,60 +1,88 @@
 ﻿@page
 @model Yummiez.Pages.Driver.ApplyModel
 
-<h2>Apply to Become a Driver</h2>
+<h2 class="mb-4">Apply to Become a Driver</h2>
 
 @if (Model.CurrentStatus == null)
 {
     <form method="post">
 
-        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+        
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+        }
 
+        <!-- FULL NAME -->
         <div class="mb-3">
             <label asp-for="Application.FullName" class="form-label"></label>
             <input asp-for="Application.FullName" class="form-control" />
+            <span asp-validation-for="Application.FullName" class="text-danger"></span>
         </div>
 
+        <!-- LICENSE -->
         <div class="mb-3">
             <label asp-for="Application.LicenseNumber" class="form-label"></label>
             <input asp-for="Application.LicenseNumber" class="form-control" />
+            <span asp-validation-for="Application.LicenseNumber" class="text-danger"></span>
         </div>
 
+        <!-- VEHICLE TYPE (DROPDOWN = MUCH BETTER UX) -->
         <div class="mb-3">
             <label asp-for="Application.VehicleType" class="form-label"></label>
-            <input asp-for="Application.VehicleType" class="form-control" />
+            <select asp-for="Application.VehicleType" class="form-select">
+                <option value="">Select vehicle type</option>
+                <option>Car</option>
+                <option>Bike</option>
+                <option>Scooter</option>
+            </select>
+            <span asp-validation-for="Application.VehicleType" class="text-danger"></span>
         </div>
 
+        <!-- VEHICLE INFO -->
         <div class="mb-3">
             <label class="form-label">Vehicle Details (Make, Model, Year, Color)</label>
-            <input asp-for="Application.VehicleInfo" class="form-control" placeholder="e.g. 2018 Toyota Camry, Black" />
+            <input asp-for="Application.VehicleInfo"
+                   class="form-control"
+                   placeholder="e.g. 2018 Toyota Camry, Black" />
+            <span asp-validation-for="Application.VehicleInfo" class="text-danger"></span>
         </div>
 
+        <!-- SUBMIT -->
         <button type="submit" class="btn btn-success">
             Submit Application
         </button>
 
     </form>
+
+
 }
 else
 {
     @if (Model.CurrentStatus == "Pending")
     {
         <div class="alert alert-warning">
-            Your application is <strong>Pending approval</strong>.
+            ⏳ Your application is <strong>Pending approval</strong>.
         </div>
     }
     else if (Model.CurrentStatus == "Approved")
     {
+
         <div class="alert alert-success">
             🎉 You are approved as a driver!
         </div>
     }
     else if (Model.CurrentStatus == "Rejected")
     {
+
         <div class="alert alert-danger">
-            Your application was rejected.
+            ❌ Your application was rejected. You may update your info and reapply later.
         </div>
     }
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
 
 

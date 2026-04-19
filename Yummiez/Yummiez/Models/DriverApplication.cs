@@ -1,9 +1,6 @@
-﻿
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-
 
 namespace Yummiez.Models
 {
@@ -11,24 +8,26 @@ namespace Yummiez.Models
     {
         public int Id { get; set; }
 
-
         [ValidateNever]
         public string UserId { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "Full name is required")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 100 characters")]
         public string FullName { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "License number is required")]
+        [StringLength(50, ErrorMessage = "License number is too long")]
         public string LicenseNumber { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "Vehicle type is required")]
         public string VehicleType { get; set; } = null!;
 
-        [Required]
+        [Required(ErrorMessage = "Vehicle info is required")]
+        [StringLength(200, ErrorMessage = "Vehicle info must be under 200 characters")]
         public string VehicleInfo { get; set; } = null!;
 
         [Required]
-        public string Status { get; set; } = "Pending"; // Pending, Approved, Rejected
+        public string Status { get; set; } = "Pending";
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

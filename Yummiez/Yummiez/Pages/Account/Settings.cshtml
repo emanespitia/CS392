@@ -1,0 +1,88 @@
+﻿@page
+@model SettingsModel
+
+<div class="container mt-5">
+    <h2 class="mb-4"> Account Settings</h2>
+
+    <form method="post">
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+        }
+
+        <!-- ACCOUNT -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h5 class="mb-3">Account</h5>
+
+            <p><strong>Current Email:</strong> @Model.Email</p>
+
+            <div class="mb-3">
+                <label class="form-label">New Email</label>
+                <input asp-for="Input.NewEmail" class="form-control" />
+                <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div class="card shadow-sm p-4 mb-4">
+            <h5 class="mb-3">Profile</h5>
+
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input asp-for="Input.FullName" class="form-control" />
+                <span asp-validation-for="Input.FullName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input asp-for="Input.Phone" class="form-control" />
+                <span asp-validation-for="Input.Phone" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- DRIVER SETTINGS -->
+        @if (Model.Driver != null)
+        {
+            <div class="card shadow-sm p-4 mb-4">
+                <h5 class="mb-3">Driver Settings</h5>
+
+                <div class="mb-3">
+                    <label class="form-label">Vehicle Type</label>
+                    <input asp-for="Input.VehicleType" class="form-control" />
+                    <span asp-validation-for="Input.VehicleType" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">License Number</label>
+                    <input asp-for="Input.LicenseNumber" class="form-control" />
+                    <span asp-validation-for="Input.LicenseNumber" class="text-danger"></span>
+                </div>
+
+                <p>
+                    <strong>Status:</strong>
+                    @if (Model.Driver.IsAvailable)
+                    {
+                        <span class="badge bg-success">Online</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Offline</span>
+                    }
+                </p>
+            </div>
+        }
+
+        <!-- SUBMIT -->
+        <button type="submit" class="btn btn-success px-4">
+            Save Changes
+        </button>
+
+    </form>
+    
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

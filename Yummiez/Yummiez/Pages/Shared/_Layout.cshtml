@@ -3,23 +3,27 @@
 @inject UserManager<IdentityUser> UserManager
 
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Yummiez</title>
+
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" />
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Yummiez.styles.css" asp-append-version="true" />
+    
+
 </head>
 
 <body>
@@ -27,6 +31,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
             <div class="container">
 
+                
                 <!-- Logo -->
                 <a class="navbar-brand" asp-page="/Index">
                     <i class="fas fa-hamburger me-2"></i>Yummiez
@@ -67,70 +72,12 @@
                                 <i class="fas fa-info-circle me-1"></i>About
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link" asp-page="/FAQ/Index">
                                 <i class="fas fa-question-circle me-1"></i>FAQ
                             </a>
                         </li>
-
-                        <!-- ✅ FIXED DRIVER BUTTON -->
-                        @if (SignInManager.IsSignedIn(User)
-                                                    && !User.IsInRole("Admin")
-                                                    && !User.IsInRole("Driver")
-                                                    && !User.IsInRole("Manager"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Driver/Apply">
-                                    <i class="fas fa-car me-1"></i>Become a Driver
-                                </a>
-                            </li>
-                        }
-
-                        @if (SignInManager.IsSignedIn(User))
-                        {
-                            @if (User.IsInRole("Manager"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-page="/Manager/Index">
-                                        <i class="fas fa-briefcase me-1"></i>Manager
-                                    </a>
-                                </li>
-                            }
-                            @if (User.IsInRole("Driver"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-page="/Driver/Dashboard">
-                                        <i class="fas fa-truck me-1"></i>Driver
-                                    </a>
-                                </li>
-                            }
-                            @if (User.IsInRole("User"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-page="/Cart/Index">
-                                        <i class="fas fa-shopping-cart me-1"></i>Cart
-                                    </a>
-                                </li>
-                            }
-
-                            @if (User.IsInRole("User"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-page="/Orders/Index">
-                                        <i class="fas fa-receipt me-1"></i>My Orders
-                                    </a>
-                                </li>
-                            }
-                        }
-
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Admin/Index">
-                                    <i class="fas fa-shield-alt me-1"></i>Admin
-                                </a>
-                            </li>
-                        }
 
                     </ul>
 
@@ -139,22 +86,87 @@
 
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item">
-                                <span class="nav-link text-muted">
-                                    <i class="fas fa-user me-1"></i>@User.Identity?.Name
-                                </span>
-                            </li>
+                            @if (User.IsInRole("User"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-page="/Cart/Index">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </a>
+                                </li>
+                            }
 
-                            <li class="nav-item">
-                                <form asp-area="Identity"
-                                      asp-page="/Account/Logout"
-                                      asp-route-returnUrl="/"
-                                      method="post">
-                                    <button type="submit"
-                                            class="btn btn-outline-primary rounded-pill px-4 ms-2">
-                                        <i class="fas fa-sign-out-alt me-1"></i>Log Out
-                                    </button>
-                                </form>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user me-1"></i>@User.Identity?.Name
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-end">
+
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/Account/Settings">
+                                            <i class="fas fa-cog me-2"></i>Settings
+                                        </a>
+                                    </li>
+
+                                    @if (User.IsInRole("User"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-page="/Orders/Index">
+                                                <i class="fas fa-receipt me-2"></i>My Orders
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @if (User.IsInRole("Driver"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-page="/Driver/Dashboard">
+                                                <i class="fas fa-car me-2"></i>Driver Dashboard
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @if (User.IsInRole("Manager"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-page="/Manager/Index">
+                                                <i class="fas fa-briefcase me-2"></i>Manager Dashboard
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-page="/Admin/Index">
+                                                <i class="fas fa-shield-alt me-2"></i>Admin Dashboard
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @if (!User.IsInRole("Driver") && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-page="/Driver/Apply">
+                                                <i class="fas fa-car me-2"></i>Become a Driver
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <li><hr class="dropdown-divider"></li>
+
+                                    <li>
+                                        <form asp-area="Identity"
+                                              asp-page="/Account/Logout"
+                                              asp-route-returnUrl="/"
+                                              method="post">
+                                            <button class="dropdown-item text-danger">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                            </button>
+                                        </form>
+                                    </li>
+
+                                </ul>
                             </li>
                         }
                         else
@@ -182,11 +194,9 @@
         </nav>
     </header>
 
-    <!-- MAIN CONTENT -->
     <div class="container">
         <main role="main" class="pb-3">
 
-            <!-- SUCCESS -->
             @if (TempData["SuccessMessage"] != null)
             {
                 <div class="alert alert-success alert-dismissible fade show d-flex align-items-center">
@@ -196,7 +206,6 @@
                 </div>
             }
 
-            <!-- ERROR -->
             @if (TempData["ErrorMessage"] != null)
             {
                 <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center">
@@ -210,7 +219,6 @@
         </main>
     </div>
 
-    <!-- FOOTER -->
     <footer class="footer-section">
         <div class="container">
             <div class="row py-4">
@@ -264,5 +272,7 @@
     <script src="~/js/site.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    
+
 </body>
 </html>
