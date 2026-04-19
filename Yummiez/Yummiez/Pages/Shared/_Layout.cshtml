@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject Yummiez.Data.YummiezDbContext Db
 
 <!DOCTYPE html>
 
@@ -97,7 +98,18 @@
 
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user me-1"></i>@User.Identity?.Name
+                                    @{
+                                        var currentUser = await UserManager.GetUserAsync(User);
+                                        var profile = currentUser != null
+                                            ? Db.UserProfiles.FirstOrDefault(p => p.IdentityUserId == currentUser.Id)
+                                            : null;
+
+                                        var displayName = !string.IsNullOrEmpty(profile?.FullName)
+                                            ? profile.FullName
+                                            : currentUser?.Email;
+                                    }
+
+                                    <i class="fas fa-user me-1"></i>@displayName
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-menu-end">
