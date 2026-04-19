@@ -111,8 +111,7 @@ namespace Yummiez.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
 
-                    // 🚫 DO NOT re-declare user — reuse the one above
-
+                    
                     // ROLE-BASED REDIRECTS
                     if (await _userManager.IsInRoleAsync(user, "Driver"))
                     {
