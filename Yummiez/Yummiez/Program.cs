@@ -46,6 +46,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDB"));
 builder.Services.AddSingleton<FaqService>();
+
+// AI ChatBot Service
+builder.Services.AddSingleton<ChatBotService>();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(60);
