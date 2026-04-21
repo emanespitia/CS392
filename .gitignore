@@ -120,3 +120,4 @@ node_modules/
 # Ignore temporary files
 ~$*
 *~
+Yummiez/Yummiez/appsettings.json

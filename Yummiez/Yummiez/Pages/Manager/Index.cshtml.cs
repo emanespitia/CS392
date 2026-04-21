@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Yummiez.Data;
+using Yummiez.Helpers;
 using Yummiez.Models;
 
 namespace Yummiez.Pages.Manager
@@ -49,6 +50,12 @@ namespace Yummiez.Pages.Manager
 
         public async Task<IActionResult> OnPostAcceptOrderAsync(int orderId)
         {
+            if (!InputValidation.IsValidPositiveOrderId(orderId))
+            {
+                TempData["ErrorMessage"] = "Invalid order.";
+                return RedirectToPage();
+            }
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -74,6 +81,12 @@ namespace Yummiez.Pages.Manager
 
         public async Task<IActionResult> OnPostMarkReadyAsync(int orderId)
         {
+            if (!InputValidation.IsValidPositiveOrderId(orderId))
+            {
+                TempData["ErrorMessage"] = "Invalid order.";
+                return RedirectToPage();
+            }
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Yummiez.Helpers;
 using Yummiez.Models;
 using Yummiez.Services;
 
@@ -30,6 +31,9 @@ public class IndexModel : PageModel
     {
         try
         {
+            Search = InputValidation.NormalizeSearchQuery(Search, InputValidation.MaxSearchQueryLength);
+            Category = InputValidation.NormalizeCategoryFilter(Category);
+
             Categories = await _faqService.GetCategoriesAsync();
 
             if (!string.IsNullOrWhiteSpace(Search))

@@ -7,6 +7,7 @@ using System.Security.Claims;
 using Yummiez.Data;
 using Yummiez.Helpers;
 using Yummiez.Models;
+using Yummiez.Services;
 
 namespace Yummiez.Pages.Cart
 {
@@ -14,10 +15,12 @@ namespace Yummiez.Pages.Cart
     public class IndexModel : PageModel
     {
         private readonly YummiezDbContext _context;
+        private readonly GeocodingService _geocodingService;
 
-        public IndexModel(YummiezDbContext context)
+        public IndexModel(YummiezDbContext context, GeocodingService geocodingService)
         {
             _context = context;
+            _geocodingService = geocodingService;
         }
 
         public List<CartItem> Items { get; set; } = new();
@@ -25,7 +28,7 @@ namespace Yummiez.Pages.Cart
 
         [BindProperty]
         [Required]
-        [StringLength(250)]
+        [StringLength(250, MinimumLength = 5)]
         public string DeliveryAddress { get; set; } = string.Empty;
 
         public void OnGet()
@@ -35,6 +38,11 @@ namespace Yummiez.Pages.Cart
 
         public IActionResult OnPostRemove(int index)
         {
+            if (index < 0)
+            {
+                return RedirectToPage();
+            }
+
             var items = CartSessionHelper.GetCart(HttpContext.Session);
             if (index >= 0 && index < items.Count)
             {
@@ -61,6 +69,7 @@ namespace Yummiez.Pages.Cart
                 return RedirectToPage();
             }
 
+            DeliveryAddress = DeliveryAddress.Trim();
             if (!ModelState.IsValid)
             {
                 Items = items;
@@ -74,6 +83,12 @@ namespace Yummiez.Pages.Cart
             }
 
             var restaurantId = items[0].RestaurantId;
+            if (restaurantId <= 0 || items.Any(i => i.RestaurantId != restaurantId))
+            {
+                TempData["ErrorMessage"] = "Your cart is invalid. Please clear it and try again.";
+                return RedirectToPage();
+            }
+
             var restaurant = await _context.Restaurants.FirstOrDefaultAsync(r => r.RestaurantId == restaurantId);
             if (restaurant == null)
             {
@@ -81,8 +96,41 @@ namespace Yummiez.Pages.Cart
                 return RedirectToPage();
             }
 
-            var restaurantCoords = GetRestaurantCoords(restaurant.Address);
-            var destCoords = GetDestinationCoords(DeliveryAddress);
+            foreach (var line in items)
+            {
+                if (line.Quantity is < 1 or > 50)
+                {
+                    TempData["ErrorMessage"] = "Invalid cart quantities.";
+                    return RedirectToPage();
+                }
+
+                if (!string.Equals(line.RestaurantName, restaurant.Name, StringComparison.Ordinal))
+                {
+                    TempData["ErrorMessage"] = "Your cart is out of date. Please clear it and try again.";
+                    return RedirectToPage();
+                }
+
+                if (!RestaurantMenuCatalog.IsValidMenuLine(restaurant, line.ItemName, line.UnitPrice))
+                {
+                    TempData["ErrorMessage"] = "Invalid cart items detected. Please clear your cart and try again.";
+                    return RedirectToPage();
+                }
+            }
+
+            var restaurantCoords = await _geocodingService.TryGeocodeAsync(restaurant.Address);
+            if (restaurantCoords == null)
+            {
+                TempData["ErrorMessage"] = "Could not resolve restaurant location. Please try again later.";
+                return RedirectToPage();
+            }
+
+            var destCoords = await _geocodingService.TryGeocodeAsync(DeliveryAddress);
+            if (destCoords == null)
+            {
+                ModelState.AddModelError("DeliveryAddress", "Please enter a valid delivery address.");
+                Items = items;
+                return Page();
+            }
             string[] driverNames = { "Alex M.", "Jordan K.", "Taylor R.", "Casey P.", "Morgan L." };
             var driverName = driverNames[new Random().Next(driverNames.Length)];
 
@@ -92,12 +140,12 @@ namespace Yummiez.Pages.Cart
                 RestaurantId = restaurant.RestaurantId,
                 DeliveryAddress = DeliveryAddress,
                 Status = OrderStatus.Placed,
-                RestaurantLat = restaurantCoords.lat,
-                RestaurantLng = restaurantCoords.lng,
-                DriverLat = restaurantCoords.lat,
-                DriverLng = restaurantCoords.lng,
-                DestLat = destCoords.lat,
-                DestLng = destCoords.lng,
+                RestaurantLat = restaurantCoords.Value.lat,
+                RestaurantLng = restaurantCoords.Value.lng,
+                DriverLat = restaurantCoords.Value.lat,
+                DriverLng = restaurantCoords.Value.lng,
+                DestLat = destCoords.Value.lat,
+                DestLng = destCoords.Value.lng,
                 DriverName = driverName,
                 CreatedAt = DateTime.UtcNow
             };
@@ -110,22 +158,5 @@ namespace Yummiez.Pages.Cart
             return RedirectToPage("/Orders/Track", new { id = order.OrderId });
         }
 
-        private static (double lat, double lng) GetRestaurantCoords(string address)
-        {
-            if (address.Contains("123 Main")) return (40.7357, -74.1724);
-            if (address.Contains("456 Broad")) return (40.7395, -74.1712);
-            if (address.Contains("789 Market")) return (40.7340, -74.1680);
-            if (address.Contains("321 Park")) return (40.7410, -74.1760);
-            if (address.Contains("654 University")) return (40.7450, -74.1800);
-            return (40.7357 + new Random().NextDouble() * 0.01, -74.1724 + new Random().NextDouble() * 0.01);
-        }
-
-        private static (double lat, double lng) GetDestinationCoords(string address)
-        {
-            var rng = new Random();
-            const double baseLat = 40.7357;
-            const double baseLng = -74.1724;
-            return (baseLat + 0.01 + rng.NextDouble() * 0.015, baseLng + 0.01 + rng.NextDouble() * 0.015);
-        }
     }
 }

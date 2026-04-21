@@ -1,6 +1,8 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenAI.Chat;
+using Yummiez.Helpers;
 using Yummiez.Services;
 
 namespace Yummiez.Controllers;
@@ -18,9 +20,15 @@ public class ChatBotController : ControllerBase
     }
 
     [HttpPost("send")]
-    public async Task<IActionResult> Send([FromBody] ChatRequest request)
+    public async Task<IActionResult> Send([FromBody] ChatRequest? request)
     {
-        if (string.IsNullOrWhiteSpace(request.Message))
+        if (request == null)
+        {
+            return BadRequest(new { reply = "Invalid request." });
+        }
+
+        var message = InputValidation.NormalizeSearchQuery(request.Message, maxLength: 4000);
+        if (string.IsNullOrWhiteSpace(message))
         {
             return BadRequest(new { reply = "Please type a message!" });
         }
@@ -29,16 +37,29 @@ public class ChatBotController : ControllerBase
         var history = new List<ChatMessage>();
         if (request.History != null)
         {
-            foreach (var msg in request.History)
+            const int maxHistoryMessages = 30;
+            var cappedHistory = request.History.TakeLast(maxHistoryMessages);
+            foreach (var msg in cappedHistory)
             {
+                if (msg is not { Role: "user" or "assistant" })
+                {
+                    continue;
+                }
+
+                var content = InputValidation.NormalizeSearchQuery(msg.Content, maxLength: 8000);
+                if (string.IsNullOrWhiteSpace(content))
+                {
+                    continue;
+                }
+
                 if (msg.Role == "user")
-                    history.Add(new UserChatMessage(msg.Content));
-                else if (msg.Role == "assistant")
-                    history.Add(new AssistantChatMessage(msg.Content));
+                    history.Add(new UserChatMessage(content));
+                else
+                    history.Add(new AssistantChatMessage(content));
             }
         }
 
-        var reply = await _chatBotService.GetResponseAsync(request.Message, history);
+        var reply = await _chatBotService.GetResponseAsync(message, history);
         return Ok(new { reply });
     }
 
@@ -51,7 +72,10 @@ public class ChatBotController : ControllerBase
 
 public class ChatRequest
 {
+    [Required]
+    [StringLength(4000, MinimumLength = 1)]
     public string Message { get; set; } = string.Empty;
+
     public List<ChatHistoryItem>? History { get; set; }
 }
 

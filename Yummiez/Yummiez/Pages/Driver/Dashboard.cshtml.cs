@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Yummiez.Data;
+using Yummiez.Helpers;
 using Yummiez.Models;
 
 [Authorize(Roles = "Driver")]
@@ -18,7 +19,7 @@ public class DashboardModel : PageModel
         _db = db;
     }
 
-    public Driver Driver { get; set; }
+    public Driver? Driver { get; set; }
     public List<Order> AvailableOrders { get; set; } = new();
     public List<Order> MyActiveOrders { get; set; } = new();
 
@@ -51,6 +52,10 @@ public class DashboardModel : PageModel
     public async Task<IActionResult> OnPostToggleAvailabilityAsync()
     {
         var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return Challenge();
+        }
 
         var driver = _db.Drivers
             .FirstOrDefault(d => d.IdentityUserId == user.Id);
@@ -66,6 +71,12 @@ public class DashboardModel : PageModel
 
     public async Task<IActionResult> OnPostAcceptPickupAsync(int orderId)
     {
+        if (!InputValidation.IsValidPositiveOrderId(orderId))
+        {
+            TempData["ErrorMessage"] = "Invalid order.";
+            return RedirectToPage();
+        }
+
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
         {
@@ -91,6 +102,12 @@ public class DashboardModel : PageModel
 
     public async Task<IActionResult> OnPostMarkDeliveredAsync(int orderId)
     {
+        if (!InputValidation.IsValidPositiveOrderId(orderId))
+        {
+            TempData["ErrorMessage"] = "Invalid order.";
+            return RedirectToPage();
+        }
+
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
         {

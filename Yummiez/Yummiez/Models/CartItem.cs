@@ -8,9 +8,11 @@ namespace Yummiez.Models
         public int RestaurantId { get; set; }
 
         [Required]
+        [StringLength(100)]
         public string RestaurantName { get; set; } = string.Empty;
 
         [Required]
+        [StringLength(120)]
         public string ItemName { get; set; } = string.Empty;
 
         [Range(0.01, 1000)]

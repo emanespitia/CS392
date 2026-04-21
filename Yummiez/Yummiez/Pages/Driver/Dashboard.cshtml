@@ -41,6 +41,16 @@
             </div>
         </div>
 
+        <div class="alert alert-info mt-3" id="locationStatus">
+            <i class="fas fa-location-arrow me-1"></i>Location sharing is required while delivering. Click "Start Location Sharing" below.
+        </div>
+
+        <div class="mb-3">
+            <button id="startLocationBtn" type="button" class="btn btn-outline-primary">
+                <i class="fas fa-map-marker-alt me-1"></i>Start Location Sharing
+            </button>
+        </div>
+
         <div class="card shadow-sm p-4 mt-4">
             <h5>📦 Ready for Pickup</h5>
             @if (Model.AvailableOrders.Any())
@@ -97,7 +107,7 @@
                         <tbody>
                             @foreach (var order in Model.MyActiveOrders)
                             {
-                                <tr>
+                                <tr data-active-order-id="@order.OrderId">
                                     <td>#@order.OrderId</td>
                                     <td>@(order.Restaurant?.Name ?? "Restaurant")</td>
                                     <td>@order.Status</td>
@@ -126,3 +136,57 @@
         </div>
     }
 </div>
+
+<script>
+    let locationWatchId = null;
+    const statusBox = document.getElementById('locationStatus');
+    const startBtn = document.getElementById('startLocationBtn');
+
+    function setStatus(message, type) {
+        if (!statusBox) return;
+        statusBox.className = `alert alert-${type} mt-3`;
+        statusBox.innerHTML = `<i class="fas fa-location-arrow me-1"></i>${message}`;
+    }
+
+    async function postDriverLocation(orderId, lat, lng) {
+        await fetch(`/api/orders/${orderId}/driver-location`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lat, lng })
+        });
+    }
+
+    function getActiveOrderIds() {
+        const orderNodes = document.querySelectorAll('[data-active-order-id]');
+        return Array.from(orderNodes).map(n => parseInt(n.getAttribute('data-active-order-id'), 10)).filter(Number.isFinite);
+    }
+
+    function startLocationSharing() {
+        if (!navigator.geolocation) {
+            setStatus('Geolocation is not supported in this browser.', 'danger');
+            return;
+        }
+
+        locationWatchId = navigator.geolocation.watchPosition(async position => {
+            const activeOrderIds = getActiveOrderIds();
+            if (activeOrderIds.length === 0) {
+                setStatus('Location enabled. Waiting for active deliveries.', 'secondary');
+                return;
+            }
+
+            const { latitude, longitude } = position.coords;
+            await Promise.all(activeOrderIds.map(id => postDriverLocation(id, latitude, longitude)));
+            setStatus('Sharing live location for active deliveries.', 'success');
+        }, err => {
+            setStatus(`Location permission error: ${err.message}`, 'danger');
+        }, {
+            enableHighAccuracy: true,
+            maximumAge: 5000,
+            timeout: 10000
+        });
+    }
+
+    if (startBtn) {
+        startBtn.addEventListener('click', startLocationSharing);
+    }
+</script>

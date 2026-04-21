@@ -49,6 +49,12 @@
                         </div>
                         <small class="d-block mt-1">Picked Up</small>
                     </div>
+                    <div class="status-step text-center" style="z-index:1;" data-step="OnTheWay">
+                        <div class="status-dot bg-secondary" id="dot-OnTheWay">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <small class="d-block mt-1">On the Way</small>
+                    </div>
                     <div class="status-step text-center" style="z-index:1;" data-step="Delivered">
                         <div class="status-dot bg-secondary" id="dot-Delivered">
                             <i class="fas fa-check-circle"></i>
@@ -124,12 +130,13 @@
 
 <script>
     const orderId = @Model.Order.OrderId;
-    const steps = ["Placed", "Accepted", "Ready", "PickedUp", "Delivered"];
+    const steps = ["Placed", "Accepted", "Ready", "PickedUp", "OnTheWay", "Delivered"];
     const statusMessages = {
         "Placed": "Your order has been placed!",
         "Accepted": "Manager accepted your order.",
         "Ready": "Your order is ready for driver pickup.",
         "PickedUp": "Your driver just picked up the order!",
+        "OnTheWay": "Your driver is on the way!",
         "Delivered": "Your order has been delivered! 🎉"
     };
 
@@ -199,7 +206,11 @@
         });
 
         document.getElementById('statusText').textContent = statusMessages[status] || '';
-        document.getElementById('statusLabel').textContent = status === 'PickedUp' ? 'Picked Up' : status;
+        document.getElementById('statusLabel').textContent = status === 'PickedUp'
+            ? 'Picked Up'
+            : status === 'OnTheWay'
+                ? 'On the Way'
+                : status;
 
         if (status === 'Delivered') {
             document.getElementById('statusBadge').innerHTML = '<i class="fas fa-check me-1"></i>Delivered';

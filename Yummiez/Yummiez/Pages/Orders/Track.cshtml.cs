@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Yummiez.Data;
+using Yummiez.Helpers;
 using Yummiez.Models;
 
 namespace Yummiez.Pages.Orders
@@ -22,6 +23,11 @@ namespace Yummiez.Pages.Orders
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            if (!InputValidation.IsValidPositiveOrderId(id))
+            {
+                return RedirectToPage("/Orders/Index");
+            }
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var order = await _context.Orders
                 .Include(o => o.Restaurant)

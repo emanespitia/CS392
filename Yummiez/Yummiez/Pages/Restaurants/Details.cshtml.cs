@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Yummiez.Data;
 using Yummiez.Helpers;
 using Yummiez.Models;
+using Yummiez.Services;
 
 namespace Yummiez.Pages.Restaurants
 {
@@ -17,28 +19,32 @@ namespace Yummiez.Pages.Restaurants
     public class DetailsModel : PageModel
     {
         private readonly YummiezDbContext _context;
+        private readonly GeocodingService _geocodingService;
 
-        public DetailsModel(YummiezDbContext context)
+        public DetailsModel(YummiezDbContext context, GeocodingService geocodingService)
         {
             _context = context;
+            _geocodingService = geocodingService;
         }
 
         public Restaurant Restaurant { get; set; } = default!;
-        public List<MenuItemOption> MenuItems { get; set; } = new();
+        public List<RestaurantMenuCatalog.MenuItemOption> MenuItems { get; set; } = new();
 
         [BindProperty]
-        public string? DeliveryAddress { get; set; }
+        [Required(ErrorMessage = "Please enter a delivery address.")]
+        [StringLength(250, MinimumLength = 5)]
+        public string DeliveryAddress { get; set; } = string.Empty;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
+            if (id is not int rid || rid <= 0)
                 return NotFound();
 
-            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(m => m.RestaurantId == id);
+            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(m => m.RestaurantId == rid);
             if (restaurant is not null)
             {
                 Restaurant = restaurant;
-                MenuItems = BuildMenuItems(restaurant);
+                MenuItems = RestaurantMenuCatalog.GetMenuItems(restaurant).ToList();
                 return Page();
             }
 
@@ -47,6 +53,11 @@ namespace Yummiez.Pages.Restaurants
 
         public async Task<IActionResult> OnPostOrderAsync(int id)
         {
+            if (id <= 0)
+            {
+                return NotFound();
+            }
+
             if (!User.IsInRole("User"))
             {
                 TempData["ErrorMessage"] = "Only user accounts can place orders.";
@@ -58,19 +69,29 @@ namespace Yummiez.Pages.Restaurants
                 return NotFound();
 
             Restaurant = restaurant;
-            MenuItems = BuildMenuItems(restaurant);
+            MenuItems = RestaurantMenuCatalog.GetMenuItems(restaurant).ToList();
 
-            if (string.IsNullOrWhiteSpace(DeliveryAddress))
+            DeliveryAddress = DeliveryAddress.Trim();
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("DeliveryAddress", "Please enter a delivery address.");
                 return Page();
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Simulated coordinates for Newark, NJ area restaurants
-            var restaurantCoords = GetRestaurantCoords(restaurant.Address);
-            var destCoords = GetDestinationCoords(DeliveryAddress);
+            var restaurantCoords = await _geocodingService.TryGeocodeAsync(restaurant.Address);
+            if (restaurantCoords == null)
+            {
+                TempData["ErrorMessage"] = "Could not resolve restaurant location. Please try again later.";
+                return RedirectToPage(new { id });
+            }
+
+            var destCoords = await _geocodingService.TryGeocodeAsync(DeliveryAddress);
+            if (destCoords == null)
+            {
+                ModelState.AddModelError("DeliveryAddress", "Please enter a valid delivery address.");
+                return Page();
+            }
 
             string[] driverNames = { "Alex M.", "Jordan K.", "Taylor R.", "Casey P.", "Morgan L." };
             var driverName = driverNames[new Random().Next(driverNames.Length)];
@@ -81,12 +102,12 @@ namespace Yummiez.Pages.Restaurants
                 RestaurantId = restaurant.RestaurantId,
                 DeliveryAddress = DeliveryAddress,
                 Status = OrderStatus.Placed,
-                RestaurantLat = restaurantCoords.lat,
-                RestaurantLng = restaurantCoords.lng,
-                DriverLat = restaurantCoords.lat,
-                DriverLng = restaurantCoords.lng,
-                DestLat = destCoords.lat,
-                DestLng = destCoords.lng,
+                RestaurantLat = restaurantCoords.Value.lat,
+                RestaurantLng = restaurantCoords.Value.lng,
+                DriverLat = restaurantCoords.Value.lat,
+                DriverLng = restaurantCoords.Value.lng,
+                DestLat = destCoords.Value.lat,
+                DestLng = destCoords.Value.lng,
                 DriverName = driverName,
                 CreatedAt = DateTime.UtcNow
             };
@@ -99,9 +120,27 @@ namespace Yummiez.Pages.Restaurants
 
         public async Task<IActionResult> OnPostAddToCartAsync(int id, string itemName, decimal unitPrice)
         {
+            if (id <= 0)
+            {
+                return NotFound();
+            }
+
             if (!User.IsInRole("User"))
             {
                 TempData["ErrorMessage"] = "Only user accounts can add items to cart.";
+                return RedirectToPage(new { id });
+            }
+
+            itemName = itemName?.Trim() ?? string.Empty;
+            if (itemName.Length is < 1 or > 120)
+            {
+                TempData["ErrorMessage"] = "Invalid menu item.";
+                return RedirectToPage(new { id });
+            }
+
+            if (unitPrice is < 0.01m or > 10_000m)
+            {
+                TempData["ErrorMessage"] = "Invalid item price.";
                 return RedirectToPage(new { id });
             }
 
@@ -114,6 +153,12 @@ namespace Yummiez.Pages.Restaurants
             if (restaurant.IsOpen != true)
             {
                 TempData["ErrorMessage"] = "This restaurant is currently closed.";
+                return RedirectToPage(new { id });
+            }
+
+            if (!RestaurantMenuCatalog.IsValidMenuLine(restaurant, itemName, unitPrice))
+            {
+                TempData["ErrorMessage"] = "Invalid menu selection.";
                 return RedirectToPage(new { id });
             }
 
@@ -150,69 +195,5 @@ namespace Yummiez.Pages.Restaurants
             return RedirectToPage(new { id });
         }
 
-        public class MenuItemOption
-        {
-            public string Name { get; set; } = string.Empty;
-            public decimal Price { get; set; }
-        }
-
-        private static List<MenuItemOption> BuildMenuItems(Restaurant restaurant)
-        {
-            var category = restaurant.Category?.ToLowerInvariant() ?? string.Empty;
-            return category switch
-            {
-                "pizza" => new List<MenuItemOption>
-                {
-                    new() { Name = "Margherita Pizza", Price = 13.99m },
-                    new() { Name = "Pepperoni Pizza", Price = 15.49m },
-                    new() { Name = "Garlic Knots", Price = 5.99m }
-                },
-                "sushi" => new List<MenuItemOption>
-                {
-                    new() { Name = "California Roll", Price = 11.99m },
-                    new() { Name = "Salmon Nigiri (6pc)", Price = 14.99m },
-                    new() { Name = "Miso Soup", Price = 4.49m }
-                },
-                "mexican" => new List<MenuItemOption>
-                {
-                    new() { Name = "Chicken Tacos", Price = 10.99m },
-                    new() { Name = "Burrito Bowl", Price = 12.49m },
-                    new() { Name = "Chips & Guac", Price = 6.99m }
-                },
-                "healthy" => new List<MenuItemOption>
-                {
-                    new() { Name = "Quinoa Bowl", Price = 11.49m },
-                    new() { Name = "Avocado Salad", Price = 9.99m },
-                    new() { Name = "Protein Smoothie", Price = 7.99m }
-                },
-                _ => new List<MenuItemOption>
-                {
-                    new() { Name = "Classic Burger", Price = 12.99m },
-                    new() { Name = "Crispy Fries", Price = 4.99m },
-                    new() { Name = "Soft Drink", Price = 2.99m }
-                }
-            };
-        }
-
-        // Simulated coordinates based on address keywords
-        private (double lat, double lng) GetRestaurantCoords(string address)
-        {
-            if (address.Contains("123 Main")) return (40.7357, -74.1724);
-            if (address.Contains("456 Broad")) return (40.7395, -74.1712);
-            if (address.Contains("789 Market")) return (40.7340, -74.1680);
-            if (address.Contains("321 Park")) return (40.7410, -74.1760);
-            if (address.Contains("654 University")) return (40.7450, -74.1800);
-            // Default: center of Newark
-            return (40.7357 + new Random().NextDouble() * 0.01, -74.1724 + new Random().NextDouble() * 0.01);
-        }
-
-        private (double lat, double lng) GetDestinationCoords(string address)
-        {
-            // Generate a point ~2-3km away from center of Newark for a realistic delivery
-            var rng = new Random();
-            double baseLat = 40.7357;
-            double baseLng = -74.1724;
-            return (baseLat + 0.01 + rng.NextDouble() * 0.015, baseLng + 0.01 + rng.NextDouble() * 0.015);
-        }
     }
 }

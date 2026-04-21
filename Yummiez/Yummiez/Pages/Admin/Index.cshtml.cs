@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Yummiez.Constants;
 using Yummiez.Data;
+using Yummiez.Helpers;
 using Yummiez.Models;
 
 namespace Yummiez.Pages.Admin
@@ -89,6 +90,12 @@ namespace Yummiez.Pages.Admin
 
         public async Task<IActionResult> OnPostUpdateRoleAsync(string userId, string role)
         {
+            if (!InputValidation.IsValidIdentityUserId(userId))
+            {
+                TempData["ErrorMessage"] = "Invalid user.";
+                return RedirectToPage();
+            }
+
             if (!AssignableRoles.Contains(role))
             {
                 return RedirectToPage();
@@ -130,6 +137,12 @@ namespace Yummiez.Pages.Admin
 
         public async Task<IActionResult> OnPostDeleteAsync(string userId)
         {
+            if (!InputValidation.IsValidIdentityUserId(userId))
+            {
+                TempData["ErrorMessage"] = "Invalid user.";
+                return RedirectToPage();
+            }
+
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
@@ -224,6 +237,18 @@ namespace Yummiez.Pages.Admin
 
         public async Task<IActionResult> OnPostAssignManagerAsync(int restaurantId, string? managerUserId)
         {
+            if (restaurantId <= 0)
+            {
+                TempData["ErrorMessage"] = "Invalid restaurant.";
+                return RedirectToPage();
+            }
+
+            if (!string.IsNullOrWhiteSpace(managerUserId) && !InputValidation.IsValidIdentityUserId(managerUserId))
+            {
+                TempData["ErrorMessage"] = "Invalid manager selection.";
+                return RedirectToPage();
+            }
+
             var restaurant = await _context.Restaurants.FirstOrDefaultAsync(r => r.RestaurantId == restaurantId);
             if (restaurant == null)
             {
@@ -255,6 +280,11 @@ namespace Yummiez.Pages.Admin
         // APPROVE DRIVER
         public async Task<IActionResult> OnPostApproveAsync(int id)
         {
+            if (id <= 0)
+            {
+                return RedirectToPage();
+            }
+
             var app = await _context.DriverApplications.FindAsync(id);
 
             if (app != null && app.Status == "Pending")
@@ -297,6 +327,11 @@ namespace Yummiez.Pages.Admin
         // REJECT DRIVER
         public async Task<IActionResult> OnPostRejectAsync(int id)
         {
+            if (id <= 0)
+            {
+                return RedirectToPage();
+            }
+
             var app = await _context.DriverApplications.FindAsync(id);
 
             if (app != null)

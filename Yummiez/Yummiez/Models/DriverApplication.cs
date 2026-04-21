@@ -20,6 +20,7 @@ namespace Yummiez.Models
         public string LicenseNumber { get; set; } = null!;
 
         [Required(ErrorMessage = "Vehicle type is required")]
+        [StringLength(50, MinimumLength = 2)]
         public string VehicleType { get; set; } = null!;
 
         [Required(ErrorMessage = "Vehicle info is required")]

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Yummiez.Data;
+using Yummiez.Helpers;
 using Yummiez.Models;
 
 namespace Yummiez.Pages
@@ -55,6 +56,9 @@ namespace Yummiez.Pages
                 return;
             }
 
+            Category = InputValidation.NormalizeCategoryFilter(Category);
+            SearchTerm = InputValidation.NormalizeSearchQuery(SearchTerm);
+
             var query = _context.Restaurants.AsQueryable();
 
             if (!string.IsNullOrEmpty(Category))
@@ -64,7 +68,7 @@ namespace Yummiez.Pages
 
             if (!string.IsNullOrEmpty(SearchTerm))
             {
-                var term = SearchTerm.ToLower();
+                var term = SearchTerm.ToLowerInvariant();
                 query = query.Where(r => r.Name.ToLower().Contains(term) || r.Address.ToLower().Contains(term));
             }
 
