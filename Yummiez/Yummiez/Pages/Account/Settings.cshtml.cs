@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -64,6 +63,8 @@ public class SettingsModel : PageModel
 
         if (Profile.Id == 0)
         {
+            Profile.FullName = Profile.FullName ?? string.Empty;
+            Profile.PhoneNumber = Profile.PhoneNumber ?? string.Empty;
             _db.UserProfiles.Add(Profile);
             await _db.SaveChangesAsync();
         }
@@ -119,8 +120,8 @@ public class SettingsModel : PageModel
             _db.UserProfiles.Add(profile);
         }
 
-        profile.FullName = Input.FullName;
-        profile.PhoneNumber = Input.Phone;
+        profile.FullName = Input.FullName.Trim();
+        profile.PhoneNumber = (Input.Phone ?? string.Empty).Trim();
 
         // 🔥 EMAIL + USERNAME FIX (CRITICAL)
         if (!string.IsNullOrEmpty(Input.NewEmail) && Input.NewEmail != user.Email)

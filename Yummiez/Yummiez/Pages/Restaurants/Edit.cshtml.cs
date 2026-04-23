@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Yummiez.Data;
+using Yummiez.Helpers;
 using Yummiez.Models;
+using System.Security.Claims;
 
 namespace Yummiez.Pages.Restaurants
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     public class EditModel : PageModel
     {
         private readonly Yummiez.Data.YummiezDbContext _context;
@@ -27,6 +29,9 @@ namespace Yummiez.Pages.Restaurants
         [BindProperty]
         public Restaurant Restaurant { get; set; } = default!;
 
+        [BindProperty]
+        public string MenuItemsInput { get; set; } = string.Empty;
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -40,7 +45,17 @@ namespace Yummiez.Pages.Restaurants
                 return NotFound();
             }
 
+            if (User.IsInRole("Manager"))
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrWhiteSpace(userId) || restaurant.ManagerUserId != userId)
+                {
+                    return Forbid();
+                }
+            }
+
             Restaurant = restaurant;
+            MenuItemsInput = RestaurantMenuCatalog.FormatMenuForEditor(restaurant);
             return Page();
         }
 
@@ -60,6 +75,15 @@ namespace Yummiez.Pages.Restaurants
                 return NotFound();
             }
 
+            if (User.IsInRole("Manager"))
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrWhiteSpace(userId) || existingRestaurant.ManagerUserId != userId)
+                {
+                    return Forbid();
+                }
+            }
+
             existingRestaurant.Name = Restaurant.Name;
             existingRestaurant.OwnerName = Restaurant.OwnerName;
             existingRestaurant.Address = Restaurant.Address;
@@ -67,6 +91,10 @@ namespace Yummiez.Pages.Restaurants
             existingRestaurant.IsOpen = Restaurant.IsOpen;
             existingRestaurant.Category = Restaurant.Category;
             existingRestaurant.ImageUrl = Restaurant.ImageUrl;
+            var customMenu = RestaurantMenuCatalog.ParseMenuInput(MenuItemsInput);
+            existingRestaurant.MenuItemsJson = customMenu.Count > 0
+                ? RestaurantMenuCatalog.SerializeMenuItems(customMenu)
+                : null;
             existingRestaurant.UpdatedAt = DateTime.UtcNow;
 
             try

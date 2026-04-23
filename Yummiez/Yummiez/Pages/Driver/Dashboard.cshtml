@@ -4,6 +4,15 @@
 <div class="container mt-5">
     <h2 class="mb-4">🚗 Driver Dashboard</h2>
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
     @if (Model.Driver != null)
     {
         <div class="card shadow-sm p-4">
@@ -73,8 +82,10 @@
                                     <td>@(order.Restaurant?.Name ?? "Restaurant")</td>
                                     <td>@order.DeliveryAddress</td>
                                     <td class="text-end">
-                                        <form method="post" asp-page-handler="AcceptPickup" class="d-inline">
+                                        <form method="post" asp-page-handler="AcceptPickup" class="d-inline accept-pickup-form">
                                             <input type="hidden" name="orderId" value="@order.OrderId" />
+                                            <input type="hidden" name="driverLat" />
+                                            <input type="hidden" name="driverLng" />
                                             <button class="btn btn-sm btn-primary">Accept Pickup</button>
                                         </form>
                                     </td>
@@ -189,4 +200,42 @@
     if (startBtn) {
         startBtn.addEventListener('click', startLocationSharing);
     }
+
+    async function captureCurrentLocation() {
+        if (!navigator.geolocation) {
+            throw new Error('Geolocation is not supported in this browser.');
+        }
+
+        return await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+                pos => resolve(pos.coords),
+                err => reject(new Error(err.message)),
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 5000,
+                    timeout: 10000
+                }
+            );
+        });
+    }
+
+    document.querySelectorAll('.accept-pickup-form').forEach(form => {
+        form.addEventListener('submit', async event => {
+            const latInput = form.querySelector('input[name="driverLat"]');
+            const lngInput = form.querySelector('input[name="driverLng"]');
+            if (!latInput || !lngInput) {
+                return;
+            }
+
+            event.preventDefault();
+            try {
+                const coords = await captureCurrentLocation();
+                latInput.value = coords.latitude;
+                lngInput.value = coords.longitude;
+                form.submit();
+            } catch (error) {
+                setStatus(`Location permission is required before pickup: ${error.message}`, 'danger');
+            }
+        });
+    });
 </script>

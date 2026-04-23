@@ -41,6 +41,20 @@ namespace Yummiez.Controllers
             if (order.UserId != userId)
                 return Forbid();
 
+            var driverName = order.DriverName;
+            if (!string.IsNullOrWhiteSpace(order.DriverUserId))
+            {
+                var profileName = await _context.UserProfiles
+                    .Where(p => p.IdentityUserId == order.DriverUserId)
+                    .Select(p => p.FullName)
+                    .FirstOrDefaultAsync();
+
+                if (!string.IsNullOrWhiteSpace(profileName))
+                {
+                    driverName = profileName.Trim();
+                }
+            }
+
             return Ok(new
             {
                 order.DriverLat,
@@ -50,7 +64,7 @@ namespace Yummiez.Controllers
                 order.RestaurantLat,
                 order.RestaurantLng,
                 order.Status,
-                order.DriverName,
+                DriverName = driverName,
                 order.StepCount,
                 TotalSteps,
                 RestaurantName = order.Restaurant?.Name ?? "Restaurant"

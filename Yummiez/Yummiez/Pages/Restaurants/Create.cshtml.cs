@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Yummiez.Data;
+using Yummiez.Helpers;
 using Yummiez.Models;
 
 namespace Yummiez.Pages.Restaurants
@@ -31,6 +32,9 @@ namespace Yummiez.Pages.Restaurants
         [BindProperty]
         public Restaurant Restaurant { get; set; } = default!;
 
+        [BindProperty]
+        public string MenuItemsInput { get; set; } = string.Empty;
+
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
@@ -39,6 +43,10 @@ namespace Yummiez.Pages.Restaurants
                 return Page();
             }
 
+            var customMenu = RestaurantMenuCatalog.ParseMenuInput(MenuItemsInput);
+            Restaurant.MenuItemsJson = customMenu.Count > 0
+                ? RestaurantMenuCatalog.SerializeMenuItems(customMenu)
+                : null;
             Restaurant.CreatedAt = DateTime.UtcNow;
             Restaurant.AdminId = 0;
             _context.Restaurants.Add(Restaurant);

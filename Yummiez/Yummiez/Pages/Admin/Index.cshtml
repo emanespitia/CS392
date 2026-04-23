@@ -68,7 +68,7 @@
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th><i class="fas fa-envelope me-1"></i>Email</th>
+                            <th><i class="fas fa-user me-1"></i>Name</th>
                             <th><i class="fas fa-user-tag me-1"></i>Role</th>
                             <th class="text-end">Actions</th>
                         </tr>
@@ -79,7 +79,9 @@
                             <tr>
                                 <td>
                                     <i class="fas fa-user-circle text-muted me-1"></i>
-                                    @user.Email
+                                    <a asp-page="/Admin/UserDetails" asp-route-userId="@user.Id" class="text-decoration-none fw-semibold">
+                                        @user.FullName
+                                    </a>
                                 </td>
                                 <td>
                                     @if (user.Role == "Admin")
@@ -250,13 +252,18 @@
                                             <option value="">-- Unassigned --</option>
                                             @foreach (var manager in Model.ManagerUsers)
                                             {
+                                                var displayName = Model.ManagerDisplayNames.TryGetValue(manager.Id, out var name)
+                                                    ? name
+                                                    : (manager.UserName ?? manager.Email ?? "Unknown Manager");
+                                                var optionLabel = $"{displayName} ({manager.Email ?? "No email"})";
+
                                                 if (manager.Id == restaurant.ManagerUserId)
                                                 {
-                                                    <option value="@manager.Id" selected>@manager.Email</option>
+                                                    <option value="@manager.Id" selected>@optionLabel</option>
                                                 }
                                                 else
                                                 {
-                                                    <option value="@manager.Id">@manager.Email</option>
+                                                    <option value="@manager.Id">@optionLabel</option>
                                                 }
                                             }
                                         </select>

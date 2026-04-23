@@ -28,6 +28,7 @@ namespace Yummiez.Pages.Admin
         public List<Yummiez.Models.Driver> Drivers { get; set; } = new();
         public List<Restaurant> Restaurants { get; set; } = new();
         public List<IdentityUser> ManagerUsers { get; set; } = new();
+        public Dictionary<string, string> ManagerDisplayNames { get; set; } = new();
         // Driver Applications
         public List<DriverApplication> Applications { get; set; } = new();
 
@@ -42,6 +43,7 @@ namespace Yummiez.Pages.Admin
         public class UserWithRole
         {
             public string Id { get; set; } = null!;
+            public string FullName { get; set; } = null!;
             public string Email { get; set; } = null!;
             public string Role { get; set; } = null!;
         }
@@ -63,14 +65,21 @@ namespace Yummiez.Pages.Admin
             Drivers = await _context.Drivers.ToListAsync();
 
             var allUsers = await _userManager.Users.ToListAsync();
+            var profileLookup = await _context.UserProfiles
+                .ToDictionaryAsync(p => p.IdentityUserId, p => p.FullName);
             TotalUsers = allUsers.Count;
 
             foreach (var user in allUsers)
             {
                 var roles = await _userManager.GetRolesAsync(user);
+                var fullName = profileLookup.TryGetValue(user.Id, out var profileName) && !string.IsNullOrWhiteSpace(profileName)
+                    ? profileName.Trim()
+                    : (user.UserName ?? user.Email ?? "Unknown User");
+
                 Users.Add(new UserWithRole
                 {
                     Id = user.Id,
+                    FullName = fullName,
                     Email = user.Email ?? "N/A",
                     Role = roles.FirstOrDefault() ?? "User"
                 });
@@ -86,6 +95,20 @@ namespace Yummiez.Pages.Admin
 
             var managerIds = await _userManager.GetUsersInRoleAsync(Roles.Manager.ToString());
             ManagerUsers = managerIds.OrderBy(u => u.Email).ToList();
+            var managerUserIds = ManagerUsers.Select(m => m.Id).ToList();
+
+            var managerProfileNames = await _context.UserProfiles
+                .Where(p => managerUserIds.Contains(p.IdentityUserId))
+                .ToDictionaryAsync(p => p.IdentityUserId, p => p.FullName);
+
+            foreach (var manager in ManagerUsers)
+            {
+                var fullName = managerProfileNames.TryGetValue(manager.Id, out var profileName) && !string.IsNullOrWhiteSpace(profileName)
+                    ? profileName.Trim()
+                    : (manager.UserName ?? manager.Email ?? "Unknown Manager");
+
+                ManagerDisplayNames[manager.Id] = fullName;
+            }
         }
 
         public async Task<IActionResult> OnPostUpdateRoleAsync(string userId, string role)

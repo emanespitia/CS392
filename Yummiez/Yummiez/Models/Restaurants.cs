@@ -48,6 +48,9 @@ namespace Yummiez.Models
         [MaxLength(500)]
         public string? ImageUrl { get; set; }
 
+        [Column("menu_items_json")]
+        public string? MenuItemsJson { get; set; }
+
         [Column("created_at")]
         public DateTime? CreatedAt { get; set; }
 

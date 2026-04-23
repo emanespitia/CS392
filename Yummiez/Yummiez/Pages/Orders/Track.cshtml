@@ -72,7 +72,7 @@
                     <i class="fas fa-user fa-lg"></i>
                 </div>
                 <div>
-                    <h6 class="mb-0 fw-bold" id="driverName">@Model.Order.DriverName</h6>
+                    <h6 class="mb-0 fw-bold" id="driverName">Driver will appear after pickup</h6>
                     <small class="text-muted" id="statusText">Placing your order...</small>
                 </div>
                 <div class="ms-auto">
@@ -131,6 +131,7 @@
 <script>
     const orderId = @Model.Order.OrderId;
     const steps = ["Placed", "Accepted", "Ready", "PickedUp", "OnTheWay", "Delivered"];
+    const statusWithVisibleDriver = new Set(["PickedUp", "OnTheWay", "Delivered"]);
     const statusMessages = {
         "Placed": "Your order has been placed!",
         "Accepted": "Manager accepted your order.",
@@ -189,9 +190,30 @@
         iconAnchor: [20, 20],
         className: ''
     });
-    const driverMarker = L.marker([restaurantLat, restaurantLng], { icon: driverIcon })
-        .addTo(map)
-        .bindPopup('Driver: @Model.Order.DriverName');
+    const driverMarker = L.marker([restaurantLat, restaurantLng], { icon: driverIcon });
+    const driverNameEl = document.getElementById('driverName');
+
+    function setDriverVisibility(status, driverName, driverLat, driverLng) {
+        const hasDriver = statusWithVisibleDriver.has(status)
+            && Number.isFinite(driverLat)
+            && Number.isFinite(driverLng);
+        const safeName = (driverName || '').trim() || 'Your driver';
+
+        if (!hasDriver) {
+            if (map.hasLayer(driverMarker)) {
+                map.removeLayer(driverMarker);
+            }
+            driverNameEl.textContent = 'Driver will appear after pickup';
+            return;
+        }
+
+        driverNameEl.textContent = safeName;
+        if (!map.hasLayer(driverMarker)) {
+            driverMarker.addTo(map);
+        }
+        driverMarker.setLatLng([driverLat, driverLng]);
+        driverMarker.bindPopup('Driver: ' + safeName);
+    }
 
     function updateStatus(status) {
         const idx = steps.indexOf(status);
@@ -218,7 +240,9 @@
     }
 
     // Initial status
-    updateStatus('@Model.Order.Status');
+    const initialStatus = '@Model.Order.Status';
+    updateStatus(initialStatus);
+    setDriverVisibility(initialStatus, '@Model.Order.DriverName', @Model.Order.DriverLat, @Model.Order.DriverLng);
 
     // Poll for updates
     let polling = true;
@@ -229,13 +253,17 @@
             if (!res.ok) return;
             const data = await res.json();
 
-            driverMarker.setLatLng([data.driverLat, data.driverLng]);
-            map.panTo([data.driverLat, data.driverLng], { animate: true });
             updateStatus(data.status);
+            setDriverVisibility(data.status, data.driverName, data.driverLat, data.driverLng);
+            if (statusWithVisibleDriver.has(data.status)) {
+                map.panTo([data.driverLat, data.driverLng], { animate: true });
+            }
 
             if (data.status === 'Delivered') {
                 polling = false;
-                driverMarker.bindPopup('Delivered! 🎉').openPopup();
+                if (map.hasLayer(driverMarker)) {
+                    driverMarker.bindPopup('Delivered! 🎉').openPopup();
+                }
                 return;
             }
         } catch (e) {

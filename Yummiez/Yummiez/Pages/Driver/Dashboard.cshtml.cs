@@ -69,7 +69,7 @@ public class DashboardModel : PageModel
         return RedirectToPage();
     }
 
-    public async Task<IActionResult> OnPostAcceptPickupAsync(int orderId)
+    public async Task<IActionResult> OnPostAcceptPickupAsync(int orderId, double? driverLat, double? driverLng)
     {
         if (!InputValidation.IsValidPositiveOrderId(orderId))
         {
@@ -83,6 +83,12 @@ public class DashboardModel : PageModel
             return Challenge();
         }
 
+        if (driverLat is null || driverLng is null || !InputValidation.IsValidLatitudeLongitude(driverLat.Value, driverLng.Value))
+        {
+            TempData["ErrorMessage"] = "Please enable location sharing before picking up an order.";
+            return RedirectToPage();
+        }
+
         var order = await _db.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
         if (order == null || order.Status != OrderStatus.Ready)
         {
@@ -90,8 +96,15 @@ public class DashboardModel : PageModel
             return RedirectToPage();
         }
 
+        var profile = await _db.UserProfiles.FirstOrDefaultAsync(p => p.IdentityUserId == user.Id);
+        var displayName = string.IsNullOrWhiteSpace(profile?.FullName)
+            ? (user.UserName ?? user.Email ?? "Driver")
+            : profile.FullName.Trim();
+
         order.DriverUserId = user.Id;
-        order.DriverName = user.Email ?? "Driver";
+        order.DriverName = displayName;
+        order.DriverLat = driverLat.Value;
+        order.DriverLng = driverLng.Value;
         order.Status = OrderStatus.PickedUp;
         order.StepCount = 1;
         await _db.SaveChangesAsync();

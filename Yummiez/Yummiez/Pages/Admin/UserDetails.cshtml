@@ -1,0 +1,49 @@
+@page
+@model Yummiez.Pages.Admin.UserDetailsModel
+@{
+    ViewData["Title"] = "User Details";
+    var fullName = !string.IsNullOrWhiteSpace(Model.Profile?.FullName)
+        ? Model.Profile!.FullName
+        : (Model.Account.UserName ?? Model.Account.Email ?? "Unknown User");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="section-title mb-0">
+        <i class="fas fa-id-card me-2"></i>User Details
+    </h2>
+    <a asp-page="/Admin/Index" class="btn btn-outline-success">
+        <i class="fas fa-arrow-left me-1"></i>Back to Admin
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <h4 class="mb-3">@fullName</h4>
+
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@(Model.Account.Email ?? "N/A")</dd>
+
+            <dt class="col-sm-3">Username</dt>
+            <dd class="col-sm-9">@(Model.Account.UserName ?? "N/A")</dd>
+
+            <dt class="col-sm-3">Phone</dt>
+            <dd class="col-sm-9">@(!string.IsNullOrWhiteSpace(Model.Profile?.PhoneNumber) ? Model.Profile.PhoneNumber : "N/A")</dd>
+
+            <dt class="col-sm-3">Roles</dt>
+            <dd class="col-sm-9">
+                @if (Model.Roles.Count == 0)
+                {
+                    <span class="text-muted">None</span>
+                }
+                else
+                {
+                    @string.Join(", ", Model.Roles)
+                }
+            </dd>
+
+            <dt class="col-sm-3">Email Confirmed</dt>
+            <dd class="col-sm-9">@(Model.Account.EmailConfirmed ? "Yes" : "No")</dd>
+        </dl>
+    </div>
+</div>

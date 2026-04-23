@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Yummiez.Data;
 using Yummiez.Models;
 
@@ -22,9 +23,11 @@ namespace Yummiez.Pages.Restaurants
         }
 
         public IList<Restaurant> Restaurant { get;set; } = default!;
+        public string? CurrentUserId { get; set; }
 
         public async Task OnGetAsync()
         {
+            CurrentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             Restaurant = await _context.Restaurants.ToListAsync();
         }
     }
