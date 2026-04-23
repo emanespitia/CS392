@@ -29,6 +29,7 @@ namespace Yummiez.Pages.Admin
         public List<Restaurant> Restaurants { get; set; } = new();
         public List<IdentityUser> ManagerUsers { get; set; } = new();
         public Dictionary<string, string> ManagerDisplayNames { get; set; } = new();
+        public Dictionary<string, string> DriverDisplayNames { get; set; } = new();
         // Driver Applications
         public List<DriverApplication> Applications { get; set; } = new();
 
@@ -87,6 +88,7 @@ namespace Yummiez.Pages.Admin
 
             // Load driver applications
             Applications = await _context.DriverApplications
+                .Where(a => a.Status != "Approved")
                 .OrderByDescending(a => a.CreatedAt)
                 .ToListAsync();
 
@@ -108,6 +110,19 @@ namespace Yummiez.Pages.Admin
                     : (manager.UserName ?? manager.Email ?? "Unknown Manager");
 
                 ManagerDisplayNames[manager.Id] = fullName;
+            }
+
+            foreach (var driver in Drivers)
+            {
+                if (profileLookup.TryGetValue(driver.IdentityUserId, out var driverName) && !string.IsNullOrWhiteSpace(driverName))
+                {
+                    DriverDisplayNames[driver.IdentityUserId] = driverName.Trim();
+                }
+                else
+                {
+                    var identityUser = allUsers.FirstOrDefault(u => u.Id == driver.IdentityUserId);
+                    DriverDisplayNames[driver.IdentityUserId] = identityUser?.UserName ?? identityUser?.Email ?? "Unknown Driver";
+                }
             }
         }
 
@@ -365,6 +380,60 @@ namespace Yummiez.Pages.Admin
                 TempData["ErrorMessage"] = $"Application rejected for {app.FullName}";
             }
 
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostDeleteDriverAsync(int driverId)
+        {
+            if (driverId <= 0)
+            {
+                TempData["ErrorMessage"] = "Invalid driver.";
+                return RedirectToPage();
+            }
+
+            var driver = await _context.Drivers.FirstOrDefaultAsync(d => d.DriverId == driverId);
+            if (driver == null)
+            {
+                TempData["ErrorMessage"] = "Driver not found.";
+                return RedirectToPage();
+            }
+
+            var user = await _userManager.FindByIdAsync(driver.IdentityUserId);
+            if (user != null && await _userManager.IsInRoleAsync(user, Roles.Driver.ToString()))
+            {
+                await _userManager.RemoveFromRoleAsync(user, Roles.Driver.ToString());
+            }
+
+            _context.Drivers.Remove(driver);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Driver removed successfully.";
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostDeleteApplicationAsync(int id)
+        {
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = "Invalid application.";
+                return RedirectToPage();
+            }
+
+            var app = await _context.DriverApplications.FirstOrDefaultAsync(a => a.Id == id);
+            if (app == null)
+            {
+                TempData["ErrorMessage"] = "Application not found.";
+                return RedirectToPage();
+            }
+
+            if (!string.Equals(app.Status, "Rejected", StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["ErrorMessage"] = "Only rejected applications can be deleted.";
+                return RedirectToPage();
+            }
+
+            _context.DriverApplications.Remove(app);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Rejected application deleted.";
             return RedirectToPage();
         }
     }

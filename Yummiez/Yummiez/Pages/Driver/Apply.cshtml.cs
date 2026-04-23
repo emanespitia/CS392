@@ -45,6 +45,18 @@ namespace Yummiez.Pages.Driver
 
         public async Task<IActionResult> OnPostAsync()
         {
+            Application.VehicleType = (Application.VehicleType ?? string.Empty).Trim();
+            Application.FullName = (Application.FullName ?? string.Empty).Trim();
+            Application.LicenseNumber = (Application.LicenseNumber ?? string.Empty).Trim();
+            Application.VehicleInfo = (Application.VehicleInfo ?? string.Empty).Trim();
+
+            var allowedVehicleTypes = new[] { "Car", "Bike", "Scooter" };
+            ModelState.Remove("Application.VehicleType");
+            if (!allowedVehicleTypes.Contains(Application.VehicleType, StringComparer.Ordinal))
+            {
+                ModelState.AddModelError("Application.VehicleType", "Please select a valid vehicle type.");
+            }
+
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Please fill out all required fields.";

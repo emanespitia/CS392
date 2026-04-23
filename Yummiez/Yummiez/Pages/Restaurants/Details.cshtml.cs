@@ -78,6 +78,10 @@ namespace Yummiez.Pages.Restaurants
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var profile = await _context.UserProfiles.FirstOrDefaultAsync(p => p.IdentityUserId == userId);
+            var customerName = string.IsNullOrWhiteSpace(profile?.FullName)
+                ? (User.Identity?.Name ?? "Customer")
+                : profile.FullName.Trim();
 
             var restaurantCoords = await _geocodingService.TryGeocodeAsync(restaurant.Address);
             if (restaurantCoords == null)
@@ -99,8 +103,10 @@ namespace Yummiez.Pages.Restaurants
             var order = new Order
             {
                 UserId = userId!,
+                CustomerName = customerName,
                 RestaurantId = restaurant.RestaurantId,
                 DeliveryAddress = DeliveryAddress,
+                ItemsSummary = "Order placed without cart line items.",
                 Status = OrderStatus.Placed,
                 RestaurantLat = restaurantCoords.Value.lat,
                 RestaurantLng = restaurantCoords.Value.lng,

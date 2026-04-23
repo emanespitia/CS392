@@ -23,6 +23,7 @@ namespace Yummiez.Pages.Manager
 
         public Restaurant? Restaurant { get; set; }
         public List<Order> Orders { get; set; } = new();
+        public Dictionary<string, string> CustomerNames { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -44,6 +45,31 @@ namespace Yummiez.Pages.Manager
                 .Where(o => o.RestaurantId == Restaurant.RestaurantId)
                 .OrderByDescending(o => o.CreatedAt)
                 .ToListAsync();
+
+            var customerIds = Orders
+                .Where(o => !string.IsNullOrWhiteSpace(o.UserId))
+                .Select(o => o.UserId)
+                .Distinct()
+                .ToList();
+
+            if (customerIds.Count > 0)
+            {
+                var profileNames = await _context.UserProfiles
+                    .Where(p => customerIds.Contains(p.IdentityUserId))
+                    .ToDictionaryAsync(p => p.IdentityUserId, p => p.FullName);
+
+                foreach (var order in Orders)
+                {
+                    if (profileNames.TryGetValue(order.UserId, out var profileName) && !string.IsNullOrWhiteSpace(profileName))
+                    {
+                        CustomerNames[order.UserId] = profileName.Trim();
+                    }
+                    else if (!CustomerNames.ContainsKey(order.UserId))
+                    {
+                        CustomerNames[order.UserId] = order.CustomerName ?? "Customer";
+                    }
+                }
+            }
 
             return Page();
         }

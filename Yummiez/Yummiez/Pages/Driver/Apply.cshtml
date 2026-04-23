@@ -30,11 +30,11 @@
         <!-- VEHICLE TYPE (DROPDOWN = MUCH BETTER UX) -->
         <div class="mb-3">
             <label asp-for="Application.VehicleType" class="form-label"></label>
-            <select asp-for="Application.VehicleType" class="form-select">
+            <select asp-for="Application.VehicleType" class="form-select" required>
                 <option value="">Select vehicle type</option>
-                <option>Car</option>
-                <option>Bike</option>
-                <option>Scooter</option>
+                <option value="Car">Car</option>
+                <option value="Bike">Bike</option>
+                <option value="Scooter">Scooter</option>
             </select>
             <span asp-validation-for="Application.VehicleType" class="text-danger"></span>
         </div>

@@ -21,15 +21,16 @@ namespace Yummiez.Pages.Admin
             _userManager = userManager;
         }
 
-        public DriverApplication Application { get; set; } = null!;
+        public DriverApplication? Application { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            Application = await _context.DriverApplications.FindAsync(id);
+            var application = await _context.DriverApplications.FindAsync(id);
 
-            if (Application == null)
+            if (application == null)
                 return RedirectToPage("/Admin/Index");
 
+            Application = application;
             return Page();
         }
 

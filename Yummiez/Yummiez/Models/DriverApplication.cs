@@ -20,7 +20,7 @@ namespace Yummiez.Models
         public string LicenseNumber { get; set; } = null!;
 
         [Required(ErrorMessage = "Vehicle type is required")]
-        [StringLength(50, MinimumLength = 2)]
+        [RegularExpression("^(Car|Bike|Scooter)$", ErrorMessage = "Please select a valid vehicle type.")]
         public string VehicleType { get; set; } = null!;
 
         [Required(ErrorMessage = "Vehicle info is required")]

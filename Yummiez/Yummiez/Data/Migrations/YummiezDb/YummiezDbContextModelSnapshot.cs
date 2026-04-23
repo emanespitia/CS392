@@ -197,6 +197,11 @@ namespace Yummiez.Data.Migrations.YummiezDb
                         .HasColumnType("datetime2")
                         .HasColumnName("delivered_at");
 
+                    b.Property<string>("CustomerName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("customer_name");
+
                     b.Property<string>("DeliveryAddress")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -229,6 +234,11 @@ namespace Yummiez.Data.Migrations.YummiezDb
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("driver_user_id");
+
+                    b.Property<string>("ItemsSummary")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)")
+                        .HasColumnName("items_summary");
 
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int")

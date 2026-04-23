@@ -197,6 +197,15 @@
                                                class="btn btn-sm btn-primary">
                                             <i class="fas fa-eye me-1"></i>View
                                         </a>
+                                        @if (app.Status == "Rejected")
+                                        {
+                                            <form method="post" asp-page-handler="DeleteApplication" class="d-inline ms-2" onsubmit="return confirm('Delete this rejected application?');">
+                                                <input type="hidden" name="id" value="@app.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash me-1"></i>Delete
+                                                </button>
+                                            </form>
+                                        }
                                     </td>
                                 </tr>
                             }
@@ -310,19 +319,29 @@
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>Email</th>
+                            <th>Driver</th>
                             <th>Vehicle</th>
                             <th>License</th>
                             <th>Status</th>
+                            <th class="text-end">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var driver in Model.Drivers)
                         {
                             var user = Model.Users.FirstOrDefault(u => u.Id == driver.IdentityUserId);
+                            var displayName = Model.DriverDisplayNames.TryGetValue(driver.IdentityUserId, out var name)
+                                ? name
+                                : (user?.FullName ?? user?.Email ?? "Unknown Driver");
+                            var displayEmail = user?.Email ?? "Unknown";
 
                             <tr>
-                                <td>@(user?.Email ?? "Unknown")</td>
+                                <td>
+                                    <a asp-page="/Admin/DriverDetails" asp-route-driverId="@driver.DriverId" class="text-decoration-none fw-semibold">
+                                        @displayName
+                                    </a>
+                                    <div class="small text-muted">@displayEmail</div>
+                                </td>
                                 <td>@driver.VehicleType</td>
                                 <td>@driver.LicenseNumber</td>
                                 <td>
@@ -338,6 +357,14 @@
                                             <i class="fas fa-circle me-1"></i>Offline
                                         </span>
                                     }
+                                </td>
+                                <td class="text-end">
+                                    <form method="post" asp-page-handler="DeleteDriver" class="d-inline" onsubmit="return confirm('Remove this driver account from the drivers list?');">
+                                        <input type="hidden" name="driverId" value="@driver.DriverId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-user-times me-1"></i>Remove
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         }

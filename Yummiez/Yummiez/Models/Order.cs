@@ -60,6 +60,14 @@ namespace Yummiez.Models
         [MaxLength(100)]
         public string DriverName { get; set; } = "Alex M.";
 
+        [Column("customer_name")]
+        [MaxLength(100)]
+        public string? CustomerName { get; set; }
+
+        [Column("items_summary")]
+        [MaxLength(2000)]
+        public string? ItemsSummary { get; set; }
+
         [Column("step_count")]
         public int StepCount { get; set; } = 0;
 

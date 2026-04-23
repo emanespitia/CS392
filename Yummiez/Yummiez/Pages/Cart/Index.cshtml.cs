@@ -82,6 +82,11 @@ namespace Yummiez.Pages.Cart
                 return Challenge();
             }
 
+            var profile = await _context.UserProfiles.FirstOrDefaultAsync(p => p.IdentityUserId == userId);
+            var customerName = string.IsNullOrWhiteSpace(profile?.FullName)
+                ? (User.Identity?.Name ?? "Customer")
+                : profile.FullName.Trim();
+
             var restaurantId = items[0].RestaurantId;
             if (restaurantId <= 0 || items.Any(i => i.RestaurantId != restaurantId))
             {
@@ -133,12 +138,15 @@ namespace Yummiez.Pages.Cart
             }
             string[] driverNames = { "Alex M.", "Jordan K.", "Taylor R.", "Casey P.", "Morgan L." };
             var driverName = driverNames[new Random().Next(driverNames.Length)];
+            var itemsSummary = string.Join("; ", items.Select(i => $"{i.Quantity}x {i.ItemName}"));
 
             var order = new Order
             {
                 UserId = userId,
+                CustomerName = customerName,
                 RestaurantId = restaurant.RestaurantId,
                 DeliveryAddress = DeliveryAddress,
+                ItemsSummary = itemsSummary,
                 Status = OrderStatus.Placed,
                 RestaurantLat = restaurantCoords.Value.lat,
                 RestaurantLng = restaurantCoords.Value.lng,
