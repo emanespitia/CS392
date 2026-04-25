@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Yummiez.Data;
 using Yummiez.Services;
+using DotNetEnv;
+
+// Load local .env file into environment variables for development (overridden by real env vars in production)
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +50,9 @@ builder.Services.AddHttpClient<GeocodingService>(client =>
     client.BaseAddress = new Uri("https://nominatim.openstreetmap.org/");
     client.Timeout = TimeSpan.FromSeconds(10);
 });
+
+//for docker
+builder.Configuration.AddEnvironmentVariables();
 
 // MongoDB FAQ Service
 builder.Services.Configure<MongoDbSettings>(

@@ -1,0 +1,6 @@
+services:
+  yummiez:
+    image: ${DOCKER_REGISTRY-}yummiez
+    build:
+      context: .
+      dockerfile: Yummiez/Dockerfile
